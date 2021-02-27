@@ -48,38 +48,25 @@ class ur_board {
         bool black_pieces[BOARD_SIZE];
         int white_rem = NUM_PIECES;
         int black_rem = NUM_PIECES;
-        ur_player& white_player;
-        ur_player& black_player;
-        bool white_turn;
-        vector<ur_move> moves;
     public:
-        ur_board(ur_player& white, ur_player& black) : white_player(white), black_player(black) {
+        ur_board() {
             memset(white_pieces, 0, sizeof(white_pieces));
             memset(black_pieces, 0, sizeof(black_pieces));
-            white_turn = true;
         }
 
-        pair<bool*, int> get_cur() {
+        bool* get_pieces(bool white_turn) {
             if(white_turn) {
-                return make_pair(white_pieces, white_rem);
+                return white_pieces;
             } else {
-                return make_pair(black_pieces, black_rem);
+                return black_pieces;
             }
         }
 
-        pair<bool*, int> get_opp() {
+        int get_rem(bool white_turn) {
             if(white_turn) {
-                return make_pair(black_pieces, black_rem);
+                return white_rem;
             } else {
-                return make_pair(white_pieces, white_rem);
-            }
-        }
-
-        ur_player& get_player() {
-            if(white_turn) {
-                return white_player;
-            } else {
-                return black_player;
+                return black_rem;
             }
         }
 
@@ -95,17 +82,15 @@ class ur_board {
             return 0 <= tile && tile <= 13;
         }
 
-        bool is_vulnerable(int tile) {
-            pair<bool*, int> opp = get_opp();
-            bool* opp_pieces = opp.first;
+        bool is_vulnerable(int tile, bool white_turn) {
+            bool* opp_pieces = get_pieces(!white_turn);
             return !(is_competition(tile) && is_rosette(tile) && opp_pieces[tile]);
         }
 
-        bool has_valid(int roll) {
-            pair<bool*, int> cur = get_cur(), opp = get_opp();
-            bool* pieces = cur.first;
-            int rem = cur.second;
-            bool* opp_pieces = opp.first;
+        bool has_valid(int roll, bool white_turn) {
+            bool* pieces = get_pieces(white_turn);
+            int rem = get_rem(white_turn);
+            bool* opp_pieces = get_pieces(!white_turn);
             if(roll == 0) {
                 return true;
             }
@@ -118,7 +103,7 @@ class ur_board {
                         return true;
                     } else if(is_board(i + roll)) {
                         if(!pieces[i + roll]) {
-                            if(is_vulnerable(i + roll)) {
+                            if(is_vulnerable(i + roll, white_turn)) {
                                 return true;
                             }
                         }
@@ -128,11 +113,10 @@ class ur_board {
             return false;
         }
 
-        bool is_valid(int roll, int tile) {
-            pair<bool*, int> cur = get_cur(), opp = get_opp();
-            bool* pieces = cur.first;
-            int rem = cur.second;
-            bool* opp_pieces = opp.first;
+        bool is_valid(int roll, int tile, bool white_turn) {
+            bool* pieces = get_pieces(white_turn);
+            int rem = get_rem(white_turn);
+            bool* opp_pieces = get_pieces(!white_turn);
             if(roll == 0) {
                 if(tile == -1 && rem > 0) {
                     return true;
@@ -149,23 +133,12 @@ class ur_board {
                 if(tile + roll == 14) {
                     return true;
                 } else if(is_board(tile + roll)) {
-                    return !pieces[tile + roll] && is_vulnerable(tile + roll);
+                    return !pieces[tile + roll] && is_vulnerable(tile + roll, white_turn);
                 } else {
                     return false;
                 }
             }
             return false;
-        }
-
-        int get_move(int roll) {
-            pair<bool*, int> cur = get_cur(), opp = get_opp();
-            return get_player().get_move(
-                cur.first,
-                cur.second,
-                opp.first,
-                opp.second,
-                roll
-            );
         }
 
         int winner() {
@@ -191,19 +164,11 @@ class ur_board {
             return 0;
         }
 
-        void change_rem(int value, bool cur_player=true) {
+        void change_rem(int value, bool white_turn) {
             if(white_turn) {
-                if(cur_player) {
-                    white_rem += value;
-                } else {
-                    black_rem += value;
-                }
+                white_rem += value;
             } else {
-                if(cur_player) {
-                    black_rem += value;
-                } else {
-                    white_rem += value;
-                }
+                black_rem += value;
             }
         }
 
@@ -286,73 +251,107 @@ class ur_board {
             cout << endl << endl;
         }
 
-        void display_move(int roll, int tile=-2) {
-            if(tile == -2) {
-                cout << (white_turn ? "WHITE" : "BLACK") << " had no valid moves for roll " << roll << endl;
-            } else {
-                cout << (white_turn ? "WHITE" : "BLACK") << " played " << tile << " with roll " << roll << endl;
-            }
-        }
-
-        // storing metadata is not implemented yet
-        void move_piece(int orig, int loc) {
-            pair<bool*, int> cur = get_cur(), opp = get_opp();
-            bool* pieces = cur.first;
-            int rem = cur.second;
-            bool* opp_pieces = opp.first;
-            int opp_rem = opp.second;
+        void move_piece(int orig, int loc, bool white_turn) {
+            bool* pieces = get_pieces(white_turn);
+            int rem = get_rem(white_turn);
+            bool* opp_pieces = get_pieces(!white_turn);
+            int opp_rem = get_rem(!white_turn);
             if(orig != loc) {
                 if(loc == 14) {
                     pieces[orig] = false;
                 } else if(orig == -1) {
-                    change_rem(-1, true);
+                    change_rem(-1, white_turn);
                     pieces[loc] = true;
                     if(is_competition(loc) && opp_pieces[loc]) {
-                        change_rem(1, false);
+                        change_rem(1, !white_turn);
                         opp_pieces[loc] = false;
                     }
                 } else {
                     pieces[orig] = false;
                     pieces[loc] = true;
                     if(is_competition(loc) && opp_pieces[loc]) {
-                        change_rem(1, false);
+                        change_rem(1, !white_turn);
                         opp_pieces[loc] = false;
                     }
                 }
             }
         }
+};
 
-        // undo is not yet implemented
-        void undo() {}
+class ur_game {
+    private:
+        ur_board board;
+        ur_player& white_player;
+        ur_player& black_player;
+        bool white_turn;
+        vector<ur_move> moves;
+    public:
+        ur_game(ur_player& white, ur_player& black) : white_player(white), black_player(black) {
+            board = ur_board();
+            white_turn = true;
+        }
+
+        ur_player& get_player() {
+            if(white_turn) {
+                return white_player;
+            } else {
+                return black_player;
+            }
+        }
+
+        int get_move(int roll) {
+            bool* pieces = board.get_pieces(white_turn);
+            int rem = board.get_rem(white_turn);
+            bool* opp_pieces = board.get_pieces(!white_turn);
+            int opp_rem = board.get_rem(!white_turn);
+            return get_player().get_move(
+                pieces,
+                rem,
+                opp_pieces,
+                opp_rem,
+                roll
+            );
+        }
+
+        void display_move(int roll, int tile) {
+            cout << (white_turn ? "WHITE" : "BLACK") << " played " << tile << " with roll " << roll << endl;
+        }
+
+        void no_moves(int roll) {
+            cout << (white_turn ? "WHITE" : "BLACK") << " had no valid moves for roll " << roll << endl;
+        }
 
         // storing metadata is not implemented yet
         void move() {
-            display_board();
+            board.display_board();
             int roll = 0;
             for(int i = 0; i < 4; ++i) {
                 roll += rand() % 2;
             }
-            if(!has_valid(roll)) {
-                display_move(roll);
+            if(!board.has_valid(roll, white_turn)) {
+                no_moves(roll);
                 white_turn = !white_turn;
                 return;
             }
             int tile = get_move(roll);
-            while(!is_valid(roll, tile)) {
+            while(!board.is_valid(roll, tile, white_turn)) {
                 tile = get_move(roll);
             }
             display_move(roll, tile);
-            move_piece(tile, tile + roll);
-            if(!is_rosette(tile + roll)) {
+            board.move_piece(tile, tile + roll, white_turn);
+            if(!board.is_rosette(tile + roll)) {
                 white_turn = !white_turn;
             }
         }
 
+        // not yet implemented
+        void undo() {}
+
         int start() {
-            while(!winner()) {
+            while(!board.winner()) {
                 move();
             }
-            return winner();
+            return board.winner();
         }
 };
 
@@ -364,8 +363,8 @@ int main(int argc, char* argv[]) {
     srand(seed);
     random_player h(true);
     random_player r(false);
-    ur_board b(h, r);
-    cout << (b.start() == 1 ? "WHITE WON" : "BLACK WON") << endl;
+    ur_game game(h, r);
+    cout << (game.start() == 1 ? "WHITE WON" : "BLACK WON") << endl;
     cout << "Program end." << endl;
     return 0;
 }
