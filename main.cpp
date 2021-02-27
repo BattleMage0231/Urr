@@ -375,7 +375,7 @@ class ur_game {
             cout << (white_turn ? "WHITE" : "BLACK") << " played " << tile << " with roll " << roll << endl;
         }
 
-        void no_moves(int roll) {
+        void display_no_moves(int roll) {
             cout << (white_turn ? "WHITE" : "BLACK") << " had no valid moves for roll " << roll << endl;
         }
 
@@ -386,7 +386,7 @@ class ur_game {
                 roll += rand() % 2;
             }
             if(!board.has_valid(roll, white_turn)) {
-                //no_moves(roll);
+                //display_no_moves(roll);
                 board.no_moves(white_turn);
                 white_turn = !white_turn;
                 return;
@@ -425,12 +425,18 @@ class ai_player : public virtual ur_player {
             int opp_rem = b.get_rem(!white_turn);
             int board = 0;
             int opp_board = 0;
+            double val = 0;
+            double loc_vals[] = {
+                1.02, 1.14, 1.31, 1.93, 1.28, 1.33, 1.38, 2.38, 1.46, 1.44, 1.38, 1.35, 2.20, 1.75
+            };
             for(int i = 0; i < 14; ++i) {
                 if(pieces[i]) {
                     ++board;
+                    val += loc_vals[i];
                 }
                 if(opp_pieces[i]) {
                     ++opp_board;
+                    val -= loc_vals[i];
                 }
             }
             if(board == 0 && rem == 0) {
@@ -441,7 +447,7 @@ class ai_player : public virtual ur_player {
             }
             int done = 7 - board - rem;
             int opp_done = 7 - opp_board - opp_rem;
-            return 10.0 * done + 4.0 * board - 10.0 * opp_done - 4.0 * opp_board;
+            return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
         }
 
         double get_avg(ur_board& board, int depth, bool white_turn, double alpha, double beta) {
@@ -588,7 +594,7 @@ int main(int argc, char* argv[]) {
             }
             ++total;
         }
-        cout << "Finished match " << i + 1 << endl;
+        cout << "Finished match " << i + 1 << " with " << (double) beat / total << endl;
     }
     cout << (double) beat / total << endl;
     cout << "Program end." << endl;
