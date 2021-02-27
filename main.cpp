@@ -40,7 +40,12 @@ class random_player : public virtual ur_player {
         }
 };
 
-class ur_move {};
+struct ur_move {
+    bool has_move;
+    bool white_turn;
+    int orig, loc;
+    bool took_piece;
+};
 
 class ur_board {
     private:
@@ -48,6 +53,7 @@ class ur_board {
         bool black_pieces[BOARD_SIZE];
         int white_rem = NUM_PIECES;
         int black_rem = NUM_PIECES;
+        vector<ur_move> moves;
     public:
         ur_board() {
             memset(white_pieces, 0, sizeof(white_pieces));
@@ -251,11 +257,52 @@ class ur_board {
             cout << endl << endl;
         }
 
+        // undo the last move made
+        void undo_last() {
+            ur_move move = moves.back();
+            moves.pop_back();
+            bool* pieces = get_pieces(move.white_turn);
+            bool* opp_pieces = get_pieces(!move.white_turn);
+            if(!move.has_move || move.orig == move.loc) {
+                return;
+            }
+            if(move.orig == -1) {
+                pieces[move.loc] = false;
+                change_rem(1, move.white_turn);
+            } else if(move.loc == 14) {
+                pieces[move.orig] = true;
+            } else {
+                pieces[move.loc] = false;
+                pieces[move.orig] = true;
+            }
+            if(move.took_piece) {
+                change_rem(-1, !move.white_turn);
+                opp_pieces[move.loc] = true;
+            }
+        }
+
+        void no_moves(bool white_turn) {
+            moves.push_back(ur_move {
+                .has_move = false,
+                .white_turn = white_turn,
+                .orig = -2,
+                .loc = -2,
+                .took_piece = false
+            });
+        }
+
         void move_piece(int orig, int loc, bool white_turn) {
             bool* pieces = get_pieces(white_turn);
             int rem = get_rem(white_turn);
             bool* opp_pieces = get_pieces(!white_turn);
             int opp_rem = get_rem(!white_turn);
+            ur_move move {
+                .has_move = true,
+                .white_turn = white_turn,
+                .orig = orig,
+                .loc = loc,
+                .took_piece = false,
+            };
             if(orig != loc) {
                 if(loc == 14) {
                     pieces[orig] = false;
@@ -265,6 +312,7 @@ class ur_board {
                     if(is_competition(loc) && opp_pieces[loc]) {
                         change_rem(1, !white_turn);
                         opp_pieces[loc] = false;
+                        move.took_piece = true;
                     }
                 } else {
                     pieces[orig] = false;
@@ -272,9 +320,11 @@ class ur_board {
                     if(is_competition(loc) && opp_pieces[loc]) {
                         change_rem(1, !white_turn);
                         opp_pieces[loc] = false;
+                        move.took_piece = true;
                     }
                 }
             }
+            moves.push_back(move);
         }
 };
 
@@ -284,7 +334,6 @@ class ur_game {
         ur_player& white_player;
         ur_player& black_player;
         bool white_turn;
-        vector<ur_move> moves;
     public:
         ur_game(ur_player& white, ur_player& black) : white_player(white), black_player(black) {
             board = ur_board();
@@ -320,8 +369,7 @@ class ur_game {
         void no_moves(int roll) {
             cout << (white_turn ? "WHITE" : "BLACK") << " had no valid moves for roll " << roll << endl;
         }
-
-        // storing metadata is not implemented yet
+        
         void move() {
             board.display_board();
             int roll = 0;
@@ -330,6 +378,7 @@ class ur_game {
             }
             if(!board.has_valid(roll, white_turn)) {
                 no_moves(roll);
+                board.no_moves(white_turn);
                 white_turn = !white_turn;
                 return;
             }
@@ -343,9 +392,6 @@ class ur_game {
                 white_turn = !white_turn;
             }
         }
-
-        // not yet implemented
-        void undo() {}
 
         int start() {
             while(!board.winner()) {
