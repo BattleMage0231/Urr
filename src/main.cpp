@@ -1,6 +1,4 @@
-#include <ur/board.h>
-#include <ur/players.h>
-#include <ur/game.h>
+#include <ur/ur.h>
 
 #include <ctime>
 #include <cstdlib>
@@ -26,7 +24,7 @@ int main(int argc, char* argv[]) {
     int beat = 0;
     for(int i = 0; i < 50; ++i) {
         int color = rand() % 2;
-        srand(i ^ seed);
+        srand((i + seed) ^ seed);
         if(color == 0) {
             ur::players::ai_player a(true);
             ur::players::random_player b(false);
