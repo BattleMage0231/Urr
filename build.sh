@@ -1,1 +1,1 @@
-g++ src/*.cpp -I include -O3
+g++ src/*.cpp src/players/*.cpp -I include -O3 -std=c++17

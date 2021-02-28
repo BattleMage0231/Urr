@@ -1,12 +1,12 @@
 #include <ur/game.h>
 
 namespace ur {
-    game::game(player& white, player& black) : white_player(white), black_player(black) {
+    game::game(players::player& white, players::player& black) : white_player(white), black_player(black) {
         b = board();
         white_turn = true;
     }
 
-    player& game::get_player() {
+    players::player& game::get_player() {
         return white_turn ? white_player : black_player;
     }
 
@@ -37,13 +37,13 @@ namespace ur {
     }
 
     void game::move() {
-        //b.display_board();
+        b.display_board();
         int roll = 0;
         for(int i = 0; i < 4; ++i) {
             roll += rand() % 2;
         }
         if(!b.has_valid(roll, white_turn)) {
-            //display_no_moves(roll);
+            display_no_moves(roll);
             b.no_moves(white_turn);
             white_turn = !white_turn;
             return;
@@ -52,7 +52,7 @@ namespace ur {
         while(!b.is_valid(roll, tile, white_turn)) {
             tile = get_move(roll);
         }
-        //display_move(roll, tile);
+        display_move(roll, tile);
         b.move_piece(tile, tile + roll, white_turn);
         if(!b.is_rosette(tile + roll)) {
             white_turn = !white_turn;
