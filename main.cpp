@@ -386,7 +386,7 @@ class ur_game {
                 roll += rand() % 2;
             }
             if(!board.has_valid(roll, white_turn)) {
-                //display_no_moves(roll);
+                display_no_moves(roll);
                 board.no_moves(white_turn);
                 white_turn = !white_turn;
                 return;
@@ -395,7 +395,7 @@ class ur_game {
             while(!board.is_valid(roll, tile, white_turn)) {
                 tile = get_move(roll);
             }
-            //display_move(roll, tile);
+            display_move(roll, tile);
             board.move_piece(tile, tile + roll, white_turn);
             if(!board.is_rosette(tile + roll)) {
                 white_turn = !white_turn;
@@ -563,14 +563,13 @@ int main(int argc, char* argv[]) {
         seed = atoi(argv[1]);
     }
     cout << "Seed: " << seed << endl;
-    /*
     // test one
     srand(seed);
-    random_player h(true);
+    ai_player h(true);
     ai_player r(false);
     ur_game game(h, r);
     cout << (game.start() == 1 ? "WHITE WON" : "BLACK WON") << endl;
-    */
+    /*
     // test multiple
     int total = 0;
     int beat = 0;
@@ -597,6 +596,7 @@ int main(int argc, char* argv[]) {
         cout << "Finished match " << i + 1 << " with " << (double) beat / total << endl;
     }
     cout << (double) beat / total << endl;
+    */
     cout << "Program end." << endl;
     return 0;
 }
