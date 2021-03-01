@@ -7,12 +7,12 @@
 
 namespace ur {
     namespace players {
-        class human_player : public virtual player {
+        class HumanPlayer : public virtual Player {
             private:
                 Color player_turn;
             public:
-                human_player(Color turn);
-                int get_move(board b, int roll);
+                HumanPlayer(Color turn);
+                int get_move(Board b, int roll);
         };
     }
 }

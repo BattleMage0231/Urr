@@ -2,9 +2,9 @@
 
 namespace ur {
     namespace players {
-        class player {
+        class Player {
             public:
-                virtual int get_move(board, int roll) = 0;
+                virtual int get_move(Board b, int roll) = 0;
         };
     }
 }

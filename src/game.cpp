@@ -1,33 +1,32 @@
 #include <ur/game.h>
 
 namespace ur {
-    game::game(players::player& white, players::player& black) : white_player(white), black_player(black) {
-        b = board();
+    Game::Game(players::Player& white, players::Player& black) : white_player(white), black_player(black) {
         turn = Color::WHITE;
     }
 
-    players::player& game::get_player() {
+    players::Player& Game::get_player() {
         return (turn == Color::WHITE) ? white_player : black_player;
     }
 
-    int game::get_move(int roll) {
-        board clone(b);
+    int Game::get_move(int roll) {
+        Board clone(b);
         return get_player().get_move(clone, roll);
     }
 
-    void game::display_move(int roll, int tile) {
+    void Game::display_move(int roll, int tile) {
         using std::cout;
         using std::endl;
         cout << ((turn == Color::WHITE) ? "WHITE" : "BLACK") << " played " << tile << " with roll " << roll << endl;
     }
 
-    void game::display_no_moves(int roll) {
+    void Game::display_no_moves(int roll) {
         using std::cout;
         using std::endl;
         cout << ((turn == Color::WHITE) ? "WHITE" : "BLACK") << " had no valid moves for roll " << roll << endl;
     }
 
-    void game::move() {
+    void Game::move() {
         b.display_board();
         int roll = 0;
         for(int i = 0; i < 4; ++i) {
@@ -50,7 +49,7 @@ namespace ur {
         }
     }
 
-    int game::start() {
+    int Game::start() {
         while(!b.winner()) {
             move();
         }

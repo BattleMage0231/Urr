@@ -2,11 +2,11 @@
 
 namespace ur {
     namespace players {
-        ai_player::ai_player(Color turn) {
+        AIPlayer::AIPlayer(Color turn) {
             player_turn = turn;
         }
 
-        int ai_player::find_any(bool* pieces, int rem) {
+        int AIPlayer::find_any(bool* pieces, int rem) {
             if(rem > 0) {
                 return -1;
             }
@@ -18,7 +18,7 @@ namespace ur {
             throw;
         }
 
-        double ai_player::get_avg(board& b, int depth, Color turn, double alpha, double beta) {
+        double AIPlayer::get_avg(Board& b, int depth, Color turn, double alpha, double beta) {
             double rates[] = {0.0625, 0.25, 0.375, 0.25, 0.0625};
             double ans = 0;
             for(int i = 0; i <= 4; ++i) {
@@ -27,7 +27,7 @@ namespace ur {
             return ans;
         }
 
-        std::pair<double, int> ai_player::negamax(board& b, int roll, Color turn, int depth, double alpha, double beta) {
+        std::pair<double, int> AIPlayer::negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta) {
             if(b.winner() || depth > 4) {
                 return std::make_pair(-2, value_of(b, turn));
             }
@@ -84,7 +84,7 @@ namespace ur {
             return std::make_pair(mmax, cmax);
         }
 
-        double ai_player::value_of(board& b, Color turn) {
+        double AIPlayer::value_of(Board& b, Color turn) {
             bool* pieces = b.get_pieces(turn);
             int rem = b.get_rem(turn);
             bool* opp_pieces = b.get_pieces(opposite(turn));
@@ -110,7 +110,7 @@ namespace ur {
             return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
         }
 
-        int ai_player::get_move(board b, int roll) {
+        int AIPlayer::get_move(Board b, int roll) {
             if(roll == 0) {
                 return find_any(b.get_pieces(player_turn), b.get_rem(player_turn));
             }

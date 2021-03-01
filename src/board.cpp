@@ -1,14 +1,14 @@
 #include <ur/board.h>
 
 namespace ur {
-    board::board() {
+    Board::Board() {
         for(int i = 0; i < 14; ++i) {
             white_pieces[i] = false;
             black_pieces[i] = false;
         }
     }
 
-    board::board(const board& orig) {
+    Board::Board(const Board& orig) {
         for(int i = 0; i < 14; ++i) {
             white_pieces[i] = orig.white_pieces[i];
             black_pieces[i] = orig.black_pieces[i];
@@ -17,20 +17,20 @@ namespace ur {
         black_rem = orig.black_rem;
     }
 
-    bool* board::get_pieces(Color turn) {
+    bool* Board::get_pieces(Color turn) {
         return (turn == Color::WHITE) ? white_pieces : black_pieces;
     }
 
-    int board::get_rem(Color turn) {
+    int Board::get_rem(Color turn) {
         return (turn == Color::WHITE) ? white_rem : black_rem;
     }
 
-    bool board::is_vulnerable(int tile, Color turn) {
+    bool Board::is_vulnerable(int tile, Color turn) {
         bool* opp_pieces = get_pieces(opposite(turn));
         return !(is_competition(tile) && is_rosette(tile) && opp_pieces[tile]);
     }
 
-    bool board::has_valid(int roll, Color turn) {
+    bool Board::has_valid(int roll, Color turn) {
         bool* pieces = get_pieces(turn);
         int rem = get_rem(turn);
         bool* opp_pieces = get_pieces(opposite(turn));
@@ -56,7 +56,7 @@ namespace ur {
         return false;
     }
 
-    bool board::is_valid(int roll, int tile, Color turn) {
+    bool Board::is_valid(int roll, int tile, Color turn) {
         bool* pieces = get_pieces(turn);
         int rem = get_rem(turn);
         bool* opp_pieces = get_pieces(opposite(turn));
@@ -84,7 +84,7 @@ namespace ur {
         return false;
     }
 
-    int board::winner() {
+    int Board::winner() {
         bool white = (white_rem == 0);
         bool black = (black_rem == 0);
         if(!white && !black) {
@@ -107,7 +107,7 @@ namespace ur {
         return 0;
     }
 
-    void board::change_rem(int value, Color turn) {
+    void Board::change_rem(int value, Color turn) {
         if(turn == Color::WHITE) {
             white_rem += value;
         } else {
@@ -115,7 +115,7 @@ namespace ur {
         }
     }
 
-    void board::display_board() {
+    void Board::display_board() {
         using std::cout;
         using std::endl;
         for(int i = 0; i < 4; ++i) {
@@ -196,8 +196,8 @@ namespace ur {
         cout << endl << endl;
     }
 
-    void board::undo_last() {
-        move mov = moves.back();
+    void Board::undo_last() {
+        Move mov = moves.back();
         moves.pop_back();
         bool* pieces = get_pieces(mov.turn);
         bool* opp_pieces = get_pieces(opposite(mov.turn));
@@ -219,8 +219,8 @@ namespace ur {
         }
     }
 
-    void board::no_moves(Color turn) {
-        moves.push_back(move {
+    void Board::no_moves(Color turn) {
+        moves.push_back(Move {
             .has_move = false,
             .turn = turn,
             .orig = -2,
@@ -229,12 +229,12 @@ namespace ur {
         });
     }
 
-    void board::move_piece(int orig, int loc, Color turn) {
+    void Board::move_piece(int orig, int loc, Color turn) {
         bool* pieces = get_pieces(turn);
         int rem = get_rem(turn);
         bool* opp_pieces = get_pieces(opposite(turn));
         int opp_rem = get_rem(opposite(turn));
-        move mov {
+        Move mov {
             .has_move = true,
             .turn = turn,
             .orig = orig,
@@ -265,5 +265,5 @@ namespace ur {
         moves.push_back(mov);
     }
 
-    board::~board() {}
+    Board::~Board() {}
 }

@@ -8,7 +8,7 @@ namespace ur {
 
     Color opposite(Color orig);
 
-    struct move {
+    struct Move {
         bool has_move;
         Color turn;
         int orig, loc;

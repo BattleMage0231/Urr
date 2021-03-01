@@ -2,9 +2,9 @@
 
 namespace ur {
     namespace players {
-        random_player::random_player(Color turn) {}
+        RandomPlayer::RandomPlayer(Color turn) {}
 
-        int random_player::get_move(board b, int roll) {
+        int RandomPlayer::get_move(Board b, int roll) {
             return (rand() % 15) - 1;
         }
     }

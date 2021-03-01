@@ -10,17 +10,17 @@
 
 namespace ur {
     namespace players {
-        class ai_player : public virtual player {
+        class AIPlayer : public virtual Player {
             private:
                 Color player_turn;
 
                 int find_any(bool* pieces, int rem);
-                double get_avg(board& b, int depth, Color turn, double alpha, double beta);
-                std::pair<double, int> negamax(board& b, int roll, Color turn, int depth, double alpha, double beta);
+                double get_avg(Board& b, int depth, Color turn, double alpha, double beta);
+                std::pair<double, int> negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta);
             public:
-                ai_player(Color turn);
-                double value_of(board& b, Color turn);
-                int get_move(board b, int roll);
+                AIPlayer(Color turn);
+                double value_of(Board& b, Color turn);
+                int get_move(Board b, int roll);
         };
     }
 }

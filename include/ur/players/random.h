@@ -7,10 +7,10 @@
 
 namespace ur {
     namespace players {
-        class random_player : public virtual player {
+        class RandomPlayer : public virtual Player {
             public:
-                random_player(Color turn);
-                int get_move(board b, int roll);
+                RandomPlayer(Color turn);
+                int get_move(Board b, int roll);
         };
     }
 }

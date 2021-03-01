@@ -7,11 +7,11 @@
 #include <ur/players/base.h>
 
 namespace ur {
-    class game {
+    class Game {
         private:
-            board b;
-            players::player& white_player;
-            players::player& black_player;
+            Board b;
+            players::Player& white_player;
+            players::Player& black_player;
             Color turn;
 
             int get_move(int roll);
@@ -19,8 +19,8 @@ namespace ur {
             void display_no_moves(int roll);
             void move();
         public:
-            game(players::player& white, players::player& black);
-            players::player& get_player();
+            Game(players::Player& white, players::Player& black);
+            players::Player& get_player();
             int start();
     };
 }

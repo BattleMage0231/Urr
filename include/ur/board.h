@@ -5,16 +5,16 @@
 #include <ur/utils.h>
 
 namespace ur {
-    class board {
+    class Board {
         private:
             bool white_pieces[BOARD_SIZE];
             bool black_pieces[BOARD_SIZE];
             int white_rem = NUM_PIECES;
             int black_rem = NUM_PIECES;
-            std::vector<move> moves;
+            std::vector<Move> moves;
         public:
-            board();
-            board(const board& orig);
+            Board();
+            Board(const Board& orig);
             bool* get_pieces(Color turn);
             int get_rem(Color turn);
             bool is_vulnerable(int tile, Color turn);
@@ -26,6 +26,6 @@ namespace ur {
             void undo_last();
             void no_moves(Color turn);
             void move_piece(int orig, int loc, Color turn);
-            ~board();
+            ~Board();
     };
 }

@@ -14,9 +14,9 @@ int main(int argc, char* argv[]) {
     cout << "Seed: " << seed << endl;
     // test one
     srand(seed);
-    ur::players::ai_player h(ur::Color::WHITE);
-    ur::players::random_player r(ur::Color::BLACK);
-    ur::game game(h, r);
+    ur::players::AIPlayer h(ur::Color::WHITE);
+    ur::players::RandomPlayer r(ur::Color::BLACK);
+    ur::Game game(h, r);
     cout << (game.start() == 1 ? "WHITE WON" : "BLACK WON") << endl;
     /*
     // test multiple
@@ -26,17 +26,17 @@ int main(int argc, char* argv[]) {
         int color = rand() % 2;
         srand((i + seed) ^ seed);
         if(color == 0) {
-            ur::players::ai_player a(ur::Color::WHITE);
-            ur::players::random_player b(ur::Color::BLACK);
-            ur::game game(a, b);
+            ur::players::AIPlayer a(ur::Color::WHITE);
+            ur::players::RandomPlayer b(ur::Color::BLACK);
+            ur::Game game(a, b);
             if(game.start() == 1) {
                 ++beat;
             }
             ++total;
         } else {
-            ur::players::ai_player a(ur::Color::BLACK);
-            ur::players::random_player b(ur::Color::WHITE);
-            ur::game game(b, a);
+            ur::players::AIPlayer a(ur::Color::BLACK);
+            ur::players::RandomPlayer b(ur::Color::WHITE);
+            ur::Game game(b, a);
             if(game.start() == 2) {
                 ++beat;
             }
