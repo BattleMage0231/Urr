@@ -2,15 +2,15 @@
 
 namespace ur {
     namespace players {
-        ai_player::ai_player(bool white) {
-            is_white = white;
+        ai_player::ai_player(Color turn) {
+            player_turn = turn;
         }
 
-        double ai_player::value_of(board& b, bool white_turn) {
-            bool* pieces = b.get_pieces(white_turn);
-            int rem = b.get_rem(white_turn);
-            bool* opp_pieces = b.get_pieces(!white_turn);
-            int opp_rem = b.get_rem(!white_turn);
+        double ai_player::value_of(board& b, Color turn) {
+            bool* pieces = b.get_pieces(turn);
+            int rem = b.get_rem(turn);
+            bool* opp_pieces = b.get_pieces(opposite(turn));
+            int opp_rem = b.get_rem(opposite(turn));
             int board = 0;
             int opp_board = 0;
             double val = 0;
@@ -32,11 +32,11 @@ namespace ur {
             return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
         }
 
-        double ai_player::get_avg(board& b, int depth, bool white_turn, double alpha, double beta) {
+        double ai_player::get_avg(board& b, int depth, Color turn, double alpha, double beta) {
             double rates[] = {0.0625, 0.25, 0.375, 0.25, 0.0625};
             double ans = 0;
             for(int i = 0; i <= 4; ++i) {
-                ans += rates[i] * negamax(b, i, white_turn, depth, alpha, beta).second;
+                ans += rates[i] * negamax(b, i, turn, depth, alpha, beta).second;
             }
             return ans;
         }
@@ -53,31 +53,31 @@ namespace ur {
             throw -1;
         }
 
-        std::pair<int, double> ai_player::negamax(board& b, int roll, bool white_turn, int depth, double alpha, double beta) {
+        std::pair<int, double> ai_player::negamax(board& b, int roll, Color turn, int depth, double alpha, double beta) {
             if(b.winner() || depth > 4) {
-                return std::make_pair(-2, value_of(b, white_turn));
+                return std::make_pair(-2, value_of(b, turn));
             }
             if(roll == 0) {
-                int any_free = find_any(b.get_pieces(white_turn), b.get_rem(white_turn));
-                b.move_piece(any_free, any_free + roll, white_turn);
-                std::pair<int, double> ans = std::make_pair(any_free, -get_avg(b, depth + 1, !white_turn, -beta, -alpha));
+                int any_free = find_any(b.get_pieces(turn), b.get_rem(turn));
+                b.move_piece(any_free, any_free + roll, turn);
+                std::pair<int, double> ans = std::make_pair(any_free, -get_avg(b, depth + 1, opposite(turn), -beta, -alpha));
                 b.undo_last();
                 return ans;
             }
-            if(!b.has_valid(roll, white_turn)) {
-                b.no_moves(white_turn);
-                std::pair<int, double> ans = std::make_pair(-2, -get_avg(b, depth + 1, !white_turn, -beta, -alpha));
+            if(!b.has_valid(roll, turn)) {
+                b.no_moves(turn);
+                std::pair<int, double> ans = std::make_pair(-2, -get_avg(b, depth + 1, opposite(turn), -beta, -alpha));
                 b.undo_last();
                 return ans;
             }
             std::vector<std::pair<double, int>> moves;
             for(int i = -1; i < 14; ++i) {
-                if(b.is_valid(roll, i, white_turn)) {
-                    b.move_piece(i, i + roll, white_turn);
+                if(b.is_valid(roll, i, turn)) {
+                    b.move_piece(i, i + roll, turn);
                     if(!b.is_rosette(i + roll)) {
-                        moves.push_back(std::make_pair(-value_of(b, !white_turn), i));
+                        moves.push_back(std::make_pair(-value_of(b, opposite(turn)), i));
                     } else {
-                        moves.push_back(std::make_pair(value_of(b, white_turn), i));
+                        moves.push_back(std::make_pair(value_of(b, turn), i));
                     }
                     b.undo_last();
                 }
@@ -87,15 +87,15 @@ namespace ur {
             int mmax = -2;
             for(int i = (int) moves.size() - 1; i >= 0; --i) {
                 int tile = moves[i].second;
-                if(!b.is_valid(roll, tile, white_turn)) {
+                if(!b.is_valid(roll, tile, turn)) {
                     throw tile;
                 }
-                b.move_piece(tile, tile + roll, white_turn);
+                b.move_piece(tile, tile + roll, turn);
                 double ans;
                 if(!b.is_rosette(tile + roll)) {
-                    ans = -get_avg(b, depth + 1, !white_turn, -beta, -alpha);
+                    ans = -get_avg(b, depth + 1, opposite(turn), -beta, -alpha);
                 } else {
-                    ans = get_avg(b, depth + 1, white_turn, alpha, beta);
+                    ans = get_avg(b, depth + 1, turn, alpha, beta);
                 }
                 b.undo_last();
                 if(ans >= cmax) {
@@ -127,14 +127,14 @@ namespace ur {
                 }
             }
             board b;
-            if(is_white) {
+            if(player_turn == Color::WHITE) {
                 b = board(pieces, rem, opp_pieces, opp_rem);
             } else {
                 b = board(opp_pieces, opp_rem, pieces, rem);
             }
             double inf = std::numeric_limits<double>::max();
             double neginf = -inf;
-            std::pair<int, double> ans = negamax(b, roll, is_white, 0, neginf, inf);
+            std::pair<int, double> ans = negamax(b, roll, player_turn, 0, neginf, inf);
             return ans.first;
         }
     }

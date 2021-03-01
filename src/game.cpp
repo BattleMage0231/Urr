@@ -3,18 +3,18 @@
 namespace ur {
     game::game(players::player& white, players::player& black) : white_player(white), black_player(black) {
         b = board();
-        white_turn = true;
+        turn = Color::WHITE;
     }
 
     players::player& game::get_player() {
-        return white_turn ? white_player : black_player;
+        return (turn == Color::WHITE) ? white_player : black_player;
     }
 
     int game::get_move(int roll) {
-        bool* pieces = b.get_pieces(white_turn);
-        int rem = b.get_rem(white_turn);
-        bool* opp_pieces = b.get_pieces(!white_turn);
-        int opp_rem = b.get_rem(!white_turn);
+        bool* pieces = b.get_pieces(turn);
+        int rem = b.get_rem(turn);
+        bool* opp_pieces = b.get_pieces(opposite(turn));
+        int opp_rem = b.get_rem(opposite(turn));
         return get_player().get_move(
             pieces,
             rem,
@@ -27,13 +27,13 @@ namespace ur {
     void game::display_move(int roll, int tile) {
         using std::cout;
         using std::endl;
-        cout << (white_turn ? "WHITE" : "BLACK") << " played " << tile << " with roll " << roll << endl;
+        cout << ((turn == Color::WHITE) ? "WHITE" : "BLACK") << " played " << tile << " with roll " << roll << endl;
     }
 
     void game::display_no_moves(int roll) {
         using std::cout;
         using std::endl;
-        cout << (white_turn ? "WHITE" : "BLACK") << " had no valid moves for roll " << roll << endl;
+        cout << ((turn == Color::WHITE) ? "WHITE" : "BLACK") << " had no valid moves for roll " << roll << endl;
     }
 
     void game::move() {
@@ -42,20 +42,20 @@ namespace ur {
         for(int i = 0; i < 4; ++i) {
             roll += rand() % 2;
         }
-        if(!b.has_valid(roll, white_turn)) {
+        if(!b.has_valid(roll, turn)) {
             display_no_moves(roll);
-            b.no_moves(white_turn);
-            white_turn = !white_turn;
+            b.no_moves(turn);
+            turn = opposite(turn);
             return;
         }
         int tile = get_move(roll);
-        while(!b.is_valid(roll, tile, white_turn)) {
+        while(!b.is_valid(roll, tile, turn)) {
             tile = get_move(roll);
         }
         display_move(roll, tile);
-        b.move_piece(tile, tile + roll, white_turn);
+        b.move_piece(tile, tile + roll, turn);
         if(!b.is_rosette(tile + roll)) {
-            white_turn = !white_turn;
+            turn = opposite(turn);
         }
     }
 

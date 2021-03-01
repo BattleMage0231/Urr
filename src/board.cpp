@@ -1,6 +1,10 @@
 #include <ur/board.h>
 
 namespace ur {
+    Color opposite(Color t) {
+        return (t == Color::WHITE) ? Color::BLACK : Color::WHITE;
+    }
+
     board::board() {
         for(int i = 0; i < 14; ++i) {
             white_pieces[i] = false;
@@ -17,20 +21,12 @@ namespace ur {
         black_rem = brem;
     }
 
-    bool* board::get_pieces(bool white_turn) {
-        if(white_turn) {
-            return white_pieces;
-        } else {
-            return black_pieces;
-        }
+    bool* board::get_pieces(Color turn) {
+        return (turn == Color::WHITE) ? white_pieces : black_pieces;
     }
 
-    int board::get_rem(bool white_turn) {
-        if(white_turn) {
-            return white_rem;
-        } else {
-            return black_rem;
-        }
+    int board::get_rem(Color turn) {
+        return (turn == Color::WHITE) ? white_rem : black_rem;
     }
 
     bool board::is_competition(int tile) {
@@ -45,15 +41,15 @@ namespace ur {
         return 0 <= tile && tile <= 13;
     }
 
-    bool board::is_vulnerable(int tile, bool white_turn) {
-        bool* opp_pieces = get_pieces(!white_turn);
+    bool board::is_vulnerable(int tile,Color turn) {
+        bool* opp_pieces = get_pieces(opposite(turn));
         return !(is_competition(tile) && is_rosette(tile) && opp_pieces[tile]);
     }
 
-    bool board::has_valid(int roll, bool white_turn) {
-        bool* pieces = get_pieces(white_turn);
-        int rem = get_rem(white_turn);
-        bool* opp_pieces = get_pieces(!white_turn);
+    bool board::has_valid(int roll, Color turn) {
+        bool* pieces = get_pieces(turn);
+        int rem = get_rem(turn);
+        bool* opp_pieces = get_pieces(opposite(turn));
         if(roll == 0) {
             return true;
         }
@@ -66,7 +62,7 @@ namespace ur {
                     return true;
                 } else if(is_board(i + roll)) {
                     if(!pieces[i + roll]) {
-                        if(is_vulnerable(i + roll, white_turn)) {
+                        if(is_vulnerable(i + roll, turn)) {
                             return true;
                         }
                     }
@@ -76,10 +72,10 @@ namespace ur {
         return false;
     }
 
-    bool board::is_valid(int roll, int tile, bool white_turn) {
-        bool* pieces = get_pieces(white_turn);
-        int rem = get_rem(white_turn);
-        bool* opp_pieces = get_pieces(!white_turn);
+    bool board::is_valid(int roll, int tile, Color turn) {
+        bool* pieces = get_pieces(turn);
+        int rem = get_rem(turn);
+        bool* opp_pieces = get_pieces(opposite(turn));
         if(roll == 0) {
             if(tile == -1 && rem > 0) {
                 return true;
@@ -96,7 +92,7 @@ namespace ur {
             if(tile + roll == 14) {
                 return true;
             } else if(is_board(tile + roll)) {
-                return !pieces[tile + roll] && is_vulnerable(tile + roll, white_turn);
+                return !pieces[tile + roll] && is_vulnerable(tile + roll, turn);
             } else {
                 return false;
             }
@@ -127,8 +123,8 @@ namespace ur {
         return 0;
     }
 
-    void board::change_rem(int value, bool white_turn) {
-        if(white_turn) {
+    void board::change_rem(int value, Color turn) {
+        if(turn == Color::WHITE) {
             white_rem += value;
         } else {
             black_rem += value;
@@ -219,14 +215,14 @@ namespace ur {
     void board::undo_last() {
         move mov = moves.back();
         moves.pop_back();
-        bool* pieces = get_pieces(mov.white_turn);
-        bool* opp_pieces = get_pieces(!mov.white_turn);
+        bool* pieces = get_pieces(mov.turn);
+        bool* opp_pieces = get_pieces(opposite(mov.turn));
         if(!mov.has_move || mov.orig == mov.loc) {
             return;
         }
         if(mov.orig == -1) {
             pieces[mov.loc] = false;
-            change_rem(1, mov.white_turn);
+            change_rem(1, mov.turn);
         } else if(mov.loc == 14) {
             pieces[mov.orig] = true;
         } else {
@@ -234,29 +230,29 @@ namespace ur {
             pieces[mov.orig] = true;
         }
         if(mov.took_piece) {
-            change_rem(-1, !mov.white_turn);
+            change_rem(-1, opposite(mov.turn));
             opp_pieces[mov.loc] = true;
         }
     }
 
-    void board::no_moves(bool white_turn) {
+    void board::no_moves(Color turn) {
         moves.push_back(move {
             .has_move = false,
-            .white_turn = white_turn,
+            .turn = turn,
             .orig = -2,
             .loc = -2,
             .took_piece = false
         });
     }
 
-    void board::move_piece(int orig, int loc, bool white_turn) {
-        bool* pieces = get_pieces(white_turn);
-        int rem = get_rem(white_turn);
-        bool* opp_pieces = get_pieces(!white_turn);
-        int opp_rem = get_rem(!white_turn);
+    void board::move_piece(int orig, int loc, Color turn) {
+        bool* pieces = get_pieces(turn);
+        int rem = get_rem(turn);
+        bool* opp_pieces = get_pieces(opposite(turn));
+        int opp_rem = get_rem(opposite(turn));
         move mov {
             .has_move = true,
-            .white_turn = white_turn,
+            .turn = turn,
             .orig = orig,
             .loc = loc,
             .took_piece = false,
@@ -265,10 +261,10 @@ namespace ur {
             if(loc == 14) {
                 pieces[orig] = false;
             } else if(orig == -1) {
-                change_rem(-1, white_turn);
+                change_rem(-1, turn);
                 pieces[loc] = true;
                 if(is_competition(loc) && opp_pieces[loc]) {
-                    change_rem(1, !white_turn);
+                    change_rem(1, opposite(turn));
                     opp_pieces[loc] = false;
                     mov.took_piece = true;
                 }
@@ -276,7 +272,7 @@ namespace ur {
                 pieces[orig] = false;
                 pieces[loc] = true;
                 if(is_competition(loc) && opp_pieces[loc]) {
-                    change_rem(1, !white_turn);
+                    change_rem(1, opposite(turn));
                     opp_pieces[loc] = false;
                     mov.took_piece = true;
                 }

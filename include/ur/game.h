@@ -11,7 +11,7 @@ namespace ur {
             board b;
             players::player& white_player;
             players::player& black_player;
-            bool white_turn;
+            Color turn;
         public:
             game(players::player& white, players::player& black);
             players::player& get_player();
