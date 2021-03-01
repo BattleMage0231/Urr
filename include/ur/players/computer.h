@@ -4,6 +4,7 @@
 #include <limits>
 #include <utility>
 #include <vector>
+#include <ur/utils.h>
 #include <ur/board.h>
 #include <ur/players/base.h>
 
@@ -12,12 +13,13 @@ namespace ur {
         class ai_player : public virtual player {
             private:
                 Color player_turn;
+
+                int find_any(bool* pieces, int rem);
+                double get_avg(board& b, int depth, Color turn, double alpha, double beta);
+                std::pair<double, int> negamax(board& b, int roll, Color turn, int depth, double alpha, double beta);
             public:
                 ai_player(Color turn);
                 double value_of(board& b, Color turn);
-                double get_avg(board& b, int depth, Color turn, double alpha, double beta);
-                int find_any(bool* pieces, int rem);
-                std::pair<int, double> negamax(board& b, int roll, Color turn, int depth, double alpha, double beta);
                 int get_move(bool* pieces, int rem, bool* opp_pieces, int opp_rem, int roll);
         };
     }

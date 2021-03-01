@@ -2,22 +2,9 @@
 
 #include <iostream>
 #include <vector>
+#include <ur/utils.h>
 
 namespace ur {
-    constexpr int BOARD_SIZE = 14;
-    constexpr int NUM_PIECES = 7;
-
-    enum class Color { WHITE, BLACK };
-
-    Color opposite(Color orig);
-
-    struct move {
-        bool has_move;
-        Color turn;
-        int orig, loc;
-        bool took_piece;
-    };
-
     class board {
         private:
             bool white_pieces[BOARD_SIZE];

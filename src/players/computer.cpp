@@ -6,30 +6,16 @@ namespace ur {
             player_turn = turn;
         }
 
-        double ai_player::value_of(board& b, Color turn) {
-            bool* pieces = b.get_pieces(turn);
-            int rem = b.get_rem(turn);
-            bool* opp_pieces = b.get_pieces(opposite(turn));
-            int opp_rem = b.get_rem(opposite(turn));
-            int board = 0;
-            int opp_board = 0;
-            double val = 0;
-            double loc_vals[] = {
-                1.02, 1.30, 1.27, 1.93, 1.28, 1.33, 1.38, 2.38, 1.46, 1.44, 1.38, 1.35, 2.20, 1.75
-            };
+        int ai_player::find_any(bool* pieces, int rem) {
+            if(rem > 0) {
+                return -1;
+            }
             for(int i = 0; i < 14; ++i) {
                 if(pieces[i]) {
-                    ++board;
-                    val += loc_vals[i];
-                }
-                if(opp_pieces[i]) {
-                    ++opp_board;
-                    val -= loc_vals[i];
+                    return i;
                 }
             }
-            int done = 7 - board - rem;
-            int opp_done = 7 - opp_board - opp_rem;
-            return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
+            throw;
         }
 
         double ai_player::get_avg(board& b, int depth, Color turn, double alpha, double beta) {
@@ -41,19 +27,7 @@ namespace ur {
             return ans;
         }
 
-        int ai_player::find_any(bool* pieces, int rem) {
-            if(rem > 0) {
-                return -1;
-            }
-            for(int i = 0; i < 14; ++i) {
-                if(pieces[i]) {
-                    return i;
-                }
-            }
-            throw -1;
-        }
-
-        std::pair<int, double> ai_player::negamax(board& b, int roll, Color turn, int depth, double alpha, double beta) {
+        std::pair<double, int> ai_player::negamax(board& b, int roll, Color turn, int depth, double alpha, double beta) {
             if(b.winner() || depth > 4) {
                 return std::make_pair(-2, value_of(b, turn));
             }
@@ -108,6 +82,32 @@ namespace ur {
                 }
             }
             return std::make_pair(mmax, cmax);
+        }
+
+        double ai_player::value_of(board& b, Color turn) {
+            bool* pieces = b.get_pieces(turn);
+            int rem = b.get_rem(turn);
+            bool* opp_pieces = b.get_pieces(opposite(turn));
+            int opp_rem = b.get_rem(opposite(turn));
+            int board = 0;
+            int opp_board = 0;
+            double val = 0;
+            double loc_vals[] = {
+                1.02, 1.30, 1.27, 1.93, 1.28, 1.33, 1.38, 2.38, 1.46, 1.44, 1.38, 1.35, 2.20, 1.75
+            };
+            for(int i = 0; i < 14; ++i) {
+                if(pieces[i]) {
+                    ++board;
+                    val += loc_vals[i];
+                }
+                if(opp_pieces[i]) {
+                    ++opp_board;
+                    val -= loc_vals[i];
+                }
+            }
+            int done = 7 - board - rem;
+            int opp_done = 7 - opp_board - opp_rem;
+            return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
         }
 
         int ai_player::get_move(bool* pieces, int rem, bool* opp_pieces, int opp_rem, int roll) {

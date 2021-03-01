@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <ur/board.h>
+#include <ur/utils.h>
 #include <ur/players/base.h>
 
 namespace ur {

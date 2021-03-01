@@ -1,10 +1,6 @@
 #include <ur/board.h>
 
 namespace ur {
-    Color opposite(Color t) {
-        return (t == Color::WHITE) ? Color::BLACK : Color::WHITE;
-    }
-
     board::board() {
         for(int i = 0; i < 14; ++i) {
             white_pieces[i] = false;
