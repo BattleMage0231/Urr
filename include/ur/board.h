@@ -14,12 +14,9 @@ namespace ur {
             std::vector<move> moves;
         public:
             board();
-            board(bool* white, int wrem, bool* black, int brem);
+            board(const board& orig);
             bool* get_pieces(Color turn);
             int get_rem(Color turn);
-            bool is_competition(int tile);
-            bool is_rosette(int tile);
-            bool is_board(int tile);
             bool is_vulnerable(int tile, Color turn);
             bool has_valid(int roll, Color turn);
             bool is_valid(int roll, int tile, Color turn);

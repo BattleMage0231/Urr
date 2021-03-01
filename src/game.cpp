@@ -11,17 +11,8 @@ namespace ur {
     }
 
     int game::get_move(int roll) {
-        bool* pieces = b.get_pieces(turn);
-        int rem = b.get_rem(turn);
-        bool* opp_pieces = b.get_pieces(opposite(turn));
-        int opp_rem = b.get_rem(opposite(turn));
-        return get_player().get_move(
-            pieces,
-            rem,
-            opp_pieces,
-            opp_rem,
-            roll
-        );
+        board clone(b);
+        return get_player().get_move(clone, roll);
     }
 
     void game::display_move(int roll, int tile) {
@@ -54,7 +45,7 @@ namespace ur {
         }
         display_move(roll, tile);
         b.move_piece(tile, tile + roll, turn);
-        if(!b.is_rosette(tile + roll)) {
+        if(!is_rosette(tile + roll)) {
             turn = opposite(turn);
         }
     }

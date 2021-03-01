@@ -8,13 +8,13 @@ namespace ur {
         }
     }
 
-    board::board(bool* white, int wrem, bool* black, int brem) {
+    board::board(const board& orig) {
         for(int i = 0; i < 14; ++i) {
-            white_pieces[i] = white[i];
-            black_pieces[i] = black[i];
+            white_pieces[i] = orig.white_pieces[i];
+            black_pieces[i] = orig.black_pieces[i];
         }
-        white_rem = wrem;
-        black_rem = brem;
+        white_rem = orig.white_rem;
+        black_rem = orig.black_rem;
     }
 
     bool* board::get_pieces(Color turn) {
@@ -25,19 +25,7 @@ namespace ur {
         return (turn == Color::WHITE) ? white_rem : black_rem;
     }
 
-    bool board::is_competition(int tile) {
-        return 4 <= tile && tile <= 11;
-    }
-
-    bool board::is_rosette(int tile) {
-        return tile == 3 || tile == 7 || tile == 12;
-    }
-
-    bool board::is_board(int tile) {
-        return 0 <= tile && tile <= 13;
-    }
-
-    bool board::is_vulnerable(int tile,Color turn) {
+    bool board::is_vulnerable(int tile, Color turn) {
         bool* opp_pieces = get_pieces(opposite(turn));
         return !(is_competition(tile) && is_rosette(tile) && opp_pieces[tile]);
     }

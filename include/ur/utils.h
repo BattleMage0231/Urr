@@ -14,4 +14,8 @@ namespace ur {
         int orig, loc;
         bool took_piece;
     };
+
+    bool is_competition(int tile);
+    bool is_rosette(int tile);
+    bool is_board(int tile);
 }

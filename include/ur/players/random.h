@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <ur/utils.h>
+#include <ur/board.h>
 #include <ur/players/base.h>
 
 namespace ur {
@@ -9,7 +10,7 @@ namespace ur {
         class random_player : public virtual player {
             public:
                 random_player(Color turn);
-                int get_move(bool* pieces, int rem, bool* opp_pieces, int opp_rem, int roll);
+                int get_move(board b, int roll);
         };
     }
 }

@@ -20,7 +20,7 @@ namespace ur {
             public:
                 ai_player(Color turn);
                 double value_of(board& b, Color turn);
-                int get_move(bool* pieces, int rem, bool* opp_pieces, int opp_rem, int roll);
+                int get_move(board b, int roll);
         };
     }
 }

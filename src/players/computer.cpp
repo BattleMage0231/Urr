@@ -48,7 +48,7 @@ namespace ur {
             for(int i = -1; i < 14; ++i) {
                 if(b.is_valid(roll, i, turn)) {
                     b.move_piece(i, i + roll, turn);
-                    if(!b.is_rosette(i + roll)) {
+                    if(!is_rosette(i + roll)) {
                         moves.push_back(std::make_pair(-value_of(b, opposite(turn)), i));
                     } else {
                         moves.push_back(std::make_pair(value_of(b, turn), i));
@@ -66,7 +66,7 @@ namespace ur {
                 }
                 b.move_piece(tile, tile + roll, turn);
                 double ans;
-                if(!b.is_rosette(tile + roll)) {
+                if(!is_rosette(tile + roll)) {
                     ans = -get_avg(b, depth + 1, opposite(turn), -beta, -alpha);
                 } else {
                     ans = get_avg(b, depth + 1, turn, alpha, beta);
@@ -110,27 +110,9 @@ namespace ur {
             return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
         }
 
-        int ai_player::get_move(bool* pieces, int rem, bool* opp_pieces, int opp_rem, int roll) {
+        int ai_player::get_move(board b, int roll) {
             if(roll == 0) {
-                return find_any(pieces, rem);
-            }
-            if(rem > 0) {
-                bool any = false;
-                for(int i = 0; i < 14; ++i) {
-                    if(pieces[i]) {
-                        any = true;
-                        break;
-                    }
-                }
-                if(!any) {
-                    return -1;
-                }
-            }
-            board b;
-            if(player_turn == Color::WHITE) {
-                b = board(pieces, rem, opp_pieces, opp_rem);
-            } else {
-                b = board(opp_pieces, opp_rem, pieces, rem);
+                return find_any(b.get_pieces(player_turn), b.get_rem(player_turn));
             }
             double inf = std::numeric_limits<double>::max();
             double neginf = -inf;
