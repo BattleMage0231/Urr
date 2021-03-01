@@ -15,32 +15,30 @@ namespace ur {
     }
 
     void Game::display_move(int roll, int tile) {
-        using std::cout;
-        using std::endl;
-        cout << ((turn == Color::WHITE) ? "WHITE" : "BLACK") << " played " << tile << " with roll " << roll << endl;
+        std::cout << ((turn == Color::WHITE) ? "WHITE" : "BLACK");
+        std::cout << " played " << tile;
+        std::cout << " with roll " << roll << std::endl;
     }
 
-    void Game::display_no_moves(int roll) {
-        using std::cout;
-        using std::endl;
-        cout << ((turn == Color::WHITE) ? "WHITE" : "BLACK") << " had no valid moves for roll " << roll << endl;
+    void Game::display_skip(int roll) {
+        std::cout << ((turn == Color::WHITE) ? "WHITE" : "BLACK");
+        std::cout << " had no valid moves for roll " << roll << std::endl;
     }
 
-    void Game::move() {
+    void Game::make_move() {
         b.display_board();
         int roll = 0;
         for(int i = 0; i < NUM_DICE; ++i) {
             roll += rand() % 2;
         }
         if(!b.has_valid(roll, turn)) {
-            display_no_moves(roll);
+            display_skip(roll);
             b.no_moves(turn);
             turn = opposite(turn);
             return;
         }
         int tile = get_move(roll);
         while(!b.is_valid(roll, tile, turn)) {
-            std::cout << "INVALID " << tile << " " << roll << " " << (int) turn << std::endl;
             tile = get_move(roll);
         }
         display_move(roll, tile);
@@ -50,9 +48,9 @@ namespace ur {
         }
     }
 
-    int Game::start() {
+    int Game::play() {
         while(!b.winner()) {
-            move();
+            make_move();
         }
         return b.winner();
     }

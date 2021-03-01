@@ -61,7 +61,7 @@ namespace ur {
         int rem = get_rem(turn);
         bool* opp_pieces = get_pieces(opposite(turn));
         if(roll == 0) {
-            if(tile == -1 && rem > 0) {
+            if(tile == OFF_BOARD && rem > 0) {
                 return true;
             }
             if(is_board(tile) && pieces[tile]) {
@@ -69,7 +69,7 @@ namespace ur {
             }
             return false;
         }
-        if(tile == -1) {
+        if(tile == OFF_BOARD) {
             return rem > 0 && !pieces[roll - 1];
         }
         if(pieces[tile]) {
@@ -111,82 +111,98 @@ namespace ur {
     void Board::display_board() {
         using std::cout;
         using std::endl;
-        for(int i = 0; i < 4; ++i) {
-            if(white_pieces[i]) {
+        int idx = 0;
+        while(!is_competition(idx)) {
+            if(white_pieces[idx]) {
                 cout << "* ";
-            } else if(is_rosette(i)) {
+            } else if(is_rosette(idx)) {
                 cout << "_ ";
             } else {
                 cout << ". ";
             }
+            ++idx;
         }
         cout << "| ";
-        for(int i = 0; i < 16; ++i) {
-            cout << ' ';
+        while(is_competition(idx)) {
+            cout << "  ";
+            ++idx;
         }
         cout << "| ";
-        for(int i = 12; i < 14; ++i) {
-            if(white_pieces[i]) {
+        while(idx < BOARD_SIZE) {
+            if(white_pieces[idx]) {
                 cout << "* ";
-            } else if(is_rosette(i)) {
+            } else if(is_rosette(idx)) {
                 cout << "_ ";
             } else {
                 cout << ". ";
             }
+            ++idx;
         }
         cout << endl;
-        for(int i = 0; i < 8; ++i) {
-            cout << ' ';
+        idx = 0;
+        while(!is_competition(idx)) {
+            cout << "  ";
+            ++idx;
         }
         cout << "| ";
-        for(int i = 4; i < 12; ++i) {
-            if(white_pieces[i]) {
+        while(is_competition(idx)) {
+            if(white_pieces[idx]) {
                 cout << "* ";
-            } else if(black_pieces[i]) {
+            } else if(black_pieces[idx]) {
                 cout << "+ ";
-            } else if(is_rosette(i)) {
+            } else if(is_rosette(idx)) {
                 cout << "_ ";
             } else {
                 cout << ". ";
             }
-        }
-        cout << "|" << endl;
-        for(int i = 0; i < 4; ++i) {
-            if(black_pieces[i]) {
-                cout << "+ ";
-            } else if(is_rosette(i)) {
-                cout << "_ ";
-            } else {
-                cout << ". ";
-            }
+            ++idx;
         }
         cout << "| ";
-        for(int i = 0; i < 16; ++i) {
-            cout << ' ';
-        }
-        cout << "| ";
-        for(int i = 12; i < 14; ++i) {
-            if(black_pieces[i]) {
+        cout << endl;
+        idx = 0;
+        while(!is_competition(idx)) {
+            if(black_pieces[idx]) {
                 cout << "+ ";
-            } else if(is_rosette(i)) {
+            } else if(is_rosette(idx)) {
                 cout << "_ ";
             } else {
                 cout << ". ";
             }
+            ++idx;
+        }
+        cout << "| ";
+        while(is_competition(idx)) {
+            cout << "  ";
+            ++idx;
+        }
+        cout << "| ";
+        while(idx < BOARD_SIZE) {
+            if(black_pieces[idx]) {
+                cout << "+ ";
+            } else if(is_rosette(idx)) {
+                cout << "_ ";
+            } else {
+                cout << ". ";
+            }
+            ++idx;
         }
         cout << endl;
-        for(int i = 0; i < 4; ++i) {
-            cout << i << ' ';
+        idx = 0;
+        while(!is_competition(idx)) {
+            cout << idx % 10 << " ";
+            ++idx;
         }
         cout << "| ";
-        for(int i = 4; i < 12; ++i) {
-            cout << i % 10 << ' ';
+        while(is_competition(idx)) {
+            cout << idx % 10 << " ";
+            ++idx;
         }
         cout << "| ";
-        for(int i = 12; i < 14; ++i) {
-            cout << i % 10 << ' ';
+        while(idx < BOARD_SIZE) {
+            cout << idx % 10 << " ";
+            ++idx;
         }
-        cout << endl << endl;
+        cout << endl;
     }
 
     void Board::undo_last() {
@@ -197,10 +213,10 @@ namespace ur {
         if(!mov.has_move || mov.orig == mov.loc) {
             return;
         }
-        if(mov.orig == -1) {
+        if(mov.orig == OFF_BOARD) {
             pieces[mov.loc] = false;
             ++get_rem(mov.turn);
-        } else if(mov.loc == 14) {
+        } else if(mov.loc == BOARD_SIZE) {
             pieces[mov.orig] = true;
         } else {
             pieces[mov.loc] = false;
@@ -216,8 +232,8 @@ namespace ur {
         moves.push_back(Move {
             .has_move = false,
             .turn = turn,
-            .orig = -2,
-            .loc = -2,
+            .orig = NULL_POS,
+            .loc = NULL_POS,
             .took_piece = false
         });
     }
@@ -237,7 +253,7 @@ namespace ur {
         if(orig != loc) {
             if(loc == BOARD_SIZE) {
                 pieces[orig] = false;
-            } else if(orig == -1) {
+            } else if(orig == OFF_BOARD) {
                 --get_rem(turn);
                 pieces[loc] = true;
                 if(is_competition(loc) && opp_pieces[loc]) {

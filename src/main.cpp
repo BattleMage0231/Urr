@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     ur::players::AIPlayer h(ur::Color::WHITE);
     ur::players::RandomPlayer r(ur::Color::BLACK);
     ur::Game game(h, r);
-    cout << (game.start() == 1 ? "WHITE WON" : "BLACK WON") << endl;
+    cout << (game.play() == 1 ? "WHITE WON" : "BLACK WON") << endl;
     /*
     // test multiple
     int total = 0;
@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
             ur::players::AIPlayer a(ur::Color::WHITE);
             ur::players::RandomPlayer b(ur::Color::BLACK);
             ur::Game game(a, b);
-            if(game.start() == 1) {
+            if(game.play() == 1) {
                 ++beat;
             }
             ++total;
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
             ur::players::AIPlayer a(ur::Color::BLACK);
             ur::players::RandomPlayer b(ur::Color::WHITE);
             ur::Game game(b, a);
-            if(game.start() == 2) {
+            if(game.play() == 2) {
                 ++beat;
             }
             ++total;

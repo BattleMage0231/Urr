@@ -16,11 +16,11 @@ namespace ur {
 
             int get_move(int roll);
             void display_move(int roll, int tile);
-            void display_no_moves(int roll);
-            void move();
+            void display_skip(int roll);
+            void make_move();
         public:
             Game(players::Player& white, players::Player& black);
             players::Player& get_player();
-            int start();
+            int play();
     };
 }

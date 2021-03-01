@@ -1,9 +1,17 @@
 #pragma once
 
+#include <limits>
+
 namespace ur {
     constexpr int BOARD_SIZE = 14;
     constexpr int NUM_PIECES = 7;
     constexpr int NUM_DICE = 4;
+
+    constexpr int NULL_POS = -2;
+    constexpr int OFF_BOARD = -1;
+
+    const double INF = std::numeric_limits<double>::max();
+    const double NEGINF = -INF;
 
     enum class Color { WHITE, BLACK };
 
