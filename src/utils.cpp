@@ -14,6 +14,6 @@ namespace ur {
     }
 
     bool is_board(int tile) {
-        return 0 <= tile && tile <= 13;
+        return 0 <= tile && tile < BOARD_SIZE;
     }
 }

@@ -3,6 +3,7 @@
 namespace ur {
     constexpr int BOARD_SIZE = 14;
     constexpr int NUM_PIECES = 7;
+    constexpr int NUM_DICE = 4;
 
     enum class Color { WHITE, BLACK };
 

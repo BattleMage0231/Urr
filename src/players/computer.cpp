@@ -10,7 +10,7 @@ namespace ur {
             if(rem > 0) {
                 return -1;
             }
-            for(int i = 0; i < 14; ++i) {
+            for(int i = 0; i < BOARD_SIZE; ++i) {
                 if(pieces[i]) {
                     return i;
                 }
@@ -21,7 +21,7 @@ namespace ur {
         double AIPlayer::get_avg(Board& b, int depth, Color turn, double alpha, double beta) {
             double rates[] = {0.0625, 0.25, 0.375, 0.25, 0.0625};
             double ans = 0;
-            for(int i = 0; i <= 4; ++i) {
+            for(int i = 0; i <= NUM_DICE; ++i) {
                 ans += rates[i] * negamax(b, i, turn, depth, alpha, beta).second;
             }
             return ans;
@@ -45,7 +45,7 @@ namespace ur {
                 return ans;
             }
             std::vector<std::pair<double, int>> moves;
-            for(int i = -1; i < 14; ++i) {
+            for(int i = -1; i < BOARD_SIZE; ++i) {
                 if(b.is_valid(roll, i, turn)) {
                     b.move_piece(i, i + roll, turn);
                     if(!is_rosette(i + roll)) {
@@ -95,7 +95,7 @@ namespace ur {
             double loc_vals[] = {
                 1.02, 1.30, 1.27, 1.93, 1.28, 1.33, 1.38, 2.38, 1.46, 1.44, 1.38, 1.35, 2.20, 1.75
             };
-            for(int i = 0; i < 14; ++i) {
+            for(int i = 0; i < BOARD_SIZE; ++i) {
                 if(pieces[i]) {
                     ++board;
                     val += loc_vals[i];
@@ -105,8 +105,8 @@ namespace ur {
                     val -= loc_vals[i];
                 }
             }
-            int done = 7 - board - rem;
-            int opp_done = 7 - opp_board - opp_rem;
+            int done = NUM_PIECES - board - rem;
+            int opp_done = NUM_PIECES - opp_board - opp_rem;
             return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
         }
 

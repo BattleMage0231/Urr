@@ -16,12 +16,11 @@ namespace ur {
             Board();
             Board(const Board& orig);
             bool* get_pieces(Color turn);
-            int get_rem(Color turn);
+            int& get_rem(Color turn);
             bool is_vulnerable(int tile, Color turn);
             bool has_valid(int roll, Color turn);
             bool is_valid(int roll, int tile, Color turn);
             int winner();
-            void change_rem(int value, Color turn);
             void display_board();
             void undo_last();
             void no_moves(Color turn);

@@ -29,7 +29,7 @@ namespace ur {
     void Game::move() {
         b.display_board();
         int roll = 0;
-        for(int i = 0; i < 4; ++i) {
+        for(int i = 0; i < NUM_DICE; ++i) {
             roll += rand() % 2;
         }
         if(!b.has_valid(roll, turn)) {

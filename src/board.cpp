@@ -2,14 +2,14 @@
 
 namespace ur {
     Board::Board() {
-        for(int i = 0; i < 14; ++i) {
+        for(int i = 0; i < BOARD_SIZE; ++i) {
             white_pieces[i] = false;
             black_pieces[i] = false;
         }
     }
 
     Board::Board(const Board& orig) {
-        for(int i = 0; i < 14; ++i) {
+        for(int i = 0; i < BOARD_SIZE; ++i) {
             white_pieces[i] = orig.white_pieces[i];
             black_pieces[i] = orig.black_pieces[i];
         }
@@ -21,7 +21,7 @@ namespace ur {
         return (turn == Color::WHITE) ? white_pieces : black_pieces;
     }
 
-    int Board::get_rem(Color turn) {
+    int& Board::get_rem(Color turn) {
         return (turn == Color::WHITE) ? white_rem : black_rem;
     }
 
@@ -40,9 +40,9 @@ namespace ur {
         if(rem > 0 && !pieces[roll - 1]) {
             return true;
         }
-        for(int i = 0; i < 14; ++i) {
+        for(int i = 0; i < BOARD_SIZE; ++i) {
             if(pieces[i]) {
-                if(i + roll == 14) {
+                if(i + roll == BOARD_SIZE) {
                     return true;
                 } else if(is_board(i + roll)) {
                     if(!pieces[i + roll]) {
@@ -73,7 +73,7 @@ namespace ur {
             return rem > 0 && !pieces[roll - 1];
         }
         if(pieces[tile]) {
-            if(tile + roll == 14) {
+            if(tile + roll == BOARD_SIZE) {
                 return true;
             } else if(is_board(tile + roll)) {
                 return !pieces[tile + roll] && is_vulnerable(tile + roll, turn);
@@ -90,7 +90,7 @@ namespace ur {
         if(!white && !black) {
             return 0;
         }
-        for(int i = 0; i < 14; ++i) {
+        for(int i = 0; i < BOARD_SIZE; ++i) {
             if(white_pieces[i]) {
                 white = false;
             }
@@ -107,14 +107,7 @@ namespace ur {
         return 0;
     }
 
-    void Board::change_rem(int value, Color turn) {
-        if(turn == Color::WHITE) {
-            white_rem += value;
-        } else {
-            black_rem += value;
-        }
-    }
-
+    // TODO change this to depend on NUM_PIECES and BOARD_SIZE
     void Board::display_board() {
         using std::cout;
         using std::endl;
@@ -206,7 +199,7 @@ namespace ur {
         }
         if(mov.orig == -1) {
             pieces[mov.loc] = false;
-            change_rem(1, mov.turn);
+            ++get_rem(mov.turn);
         } else if(mov.loc == 14) {
             pieces[mov.orig] = true;
         } else {
@@ -214,7 +207,7 @@ namespace ur {
             pieces[mov.orig] = true;
         }
         if(mov.took_piece) {
-            change_rem(-1, opposite(mov.turn));
+            --get_rem(opposite(mov.turn));
             opp_pieces[mov.loc] = true;
         }
     }
@@ -242,13 +235,13 @@ namespace ur {
             .took_piece = false,
         };
         if(orig != loc) {
-            if(loc == 14) {
+            if(loc == BOARD_SIZE) {
                 pieces[orig] = false;
             } else if(orig == -1) {
-                change_rem(-1, turn);
+                --get_rem(turn);
                 pieces[loc] = true;
                 if(is_competition(loc) && opp_pieces[loc]) {
-                    change_rem(1, opposite(turn));
+                    ++get_rem(opposite(turn));
                     opp_pieces[loc] = false;
                     mov.took_piece = true;
                 }
@@ -256,7 +249,7 @@ namespace ur {
                 pieces[orig] = false;
                 pieces[loc] = true;
                 if(is_competition(loc) && opp_pieces[loc]) {
-                    change_rem(1, opposite(turn));
+                    ++get_rem(opposite(turn));
                     opp_pieces[loc] = false;
                     mov.took_piece = true;
                 }
