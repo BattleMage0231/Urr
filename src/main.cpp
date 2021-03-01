@@ -1,5 +1,6 @@
 #include <ur/players.h>
 #include <ur/game.h>
+#include <ur/utils.h>
 
 #include <ctime>
 #include <cstdlib>
@@ -13,32 +14,33 @@ int main(int argc, char* argv[]) {
         seed = std::atoi(argv[1]);
     }
     cout << "Seed: " << seed << endl;
+    /*
     // test one
     srand(seed);
     ur::players::AIPlayer h(ur::Color::WHITE);
     ur::players::RandomPlayer r(ur::Color::BLACK);
     ur::Game game(h, r);
-    cout << (game.play() == 1 ? "WHITE WON" : "BLACK WON") << endl;
-    /*
+    cout << (game.play() == ur::Color::WHITE ? "WHITE WON" : "BLACK WON") << endl;
+    */
     // test multiple
     int total = 0;
     int beat = 0;
-    for(int i = 0; i < 50; ++i) {
+    for(int i = 0; i < 1000; ++i) {
         int color = rand() % 2;
         srand((i + seed) ^ seed);
         if(color == 0) {
-            ur::players::AIPlayer a(ur::Color::WHITE);
-            ur::players::RandomPlayer b(ur::Color::BLACK);
+            ur::players::AIPlayer  a(ur::Color::WHITE);
+            ur::players::AIPlayer b(ur::Color::BLACK);
             ur::Game game(a, b);
-            if(game.play() == 1) {
+            if(game.play() == ur::Color::WHITE) {
                 ++beat;
             }
             ++total;
         } else {
             ur::players::AIPlayer a(ur::Color::BLACK);
-            ur::players::RandomPlayer b(ur::Color::WHITE);
+            ur::players::AIPlayer b(ur::Color::WHITE);
             ur::Game game(b, a);
-            if(game.play() == 2) {
+            if(game.play() == ur::Color::BLACK) {
                 ++beat;
             }
             ++total;
@@ -46,7 +48,6 @@ int main(int argc, char* argv[]) {
         cout << "Finished match " << i + 1 << " with " << (double) beat / total << endl;
     }
     cout << (double) beat / total << endl;
-    */
     cout << "Program end." << endl;
     return 0;
 }

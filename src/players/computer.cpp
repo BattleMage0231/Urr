@@ -6,10 +6,11 @@ namespace ur {
             player_turn = turn;
         }
 
-        int AIPlayer::find_any(bool* pieces, int rem) {
-            if(rem > 0) {
+        int AIPlayer::any_free(Board& b, Color turn) {
+            if(b.get_rem(turn) > 0) {
                 return OFF_BOARD;
             }
+            bool* pieces = b.get_pieces(turn);
             for(int i = 0; i < BOARD_SIZE; ++i) {
                 if(pieces[i]) {
                     return i;
@@ -28,15 +29,15 @@ namespace ur {
         }
 
         std::pair<double, int> AIPlayer::negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta) {
-            if(b.winner() || depth > 4) {
+            if(b.finished() || depth > 4) {
                 return std::make_pair(NULL_POS, value_of(b, turn));
             }
             if(roll == 0) {
-                int any_free = find_any(b.get_pieces(turn), b.get_rem(turn));
-                b.move_piece(any_free, any_free + roll, turn);
+                int free_piece = any_free(b, turn);
+                b.move_piece(free_piece, free_piece + roll, turn);
                 double avg = -get_avg(b, depth + 1, opposite(turn), -beta, -alpha);
                 b.undo_last();
-                return std::make_pair(any_free, avg);
+                return std::make_pair(free_piece, avg);
             }
             if(!b.has_valid(roll, turn)) {
                 b.no_moves(turn);
@@ -102,14 +103,14 @@ namespace ur {
                     val -= loc_vals[i];
                 }
             }
-            int done = NUM_PIECES - board - rem;
-            int opp_done = NUM_PIECES - opp_board - opp_rem;
+            int done = b.get_done(turn);
+            int opp_done = b.get_done(opposite(turn));
             return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
         }
 
         int AIPlayer::get_move(Board b, int roll) {
             if(roll == 0) {
-                return find_any(b.get_pieces(player_turn), b.get_rem(player_turn));
+                return any_free(b, player_turn);
             }
             return negamax(b, roll, player_turn, 0, NEGINF, INF).first;
         }

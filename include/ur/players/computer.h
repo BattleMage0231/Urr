@@ -13,7 +13,7 @@ namespace ur {
             private:
                 Color player_turn;
 
-                int find_any(bool* pieces, int rem);
+                int any_free(Board& b, Color turn);
                 double get_avg(Board& b, int depth, Color turn, double alpha, double beta);
                 std::pair<double, int> negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta);
             public:

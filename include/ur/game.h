@@ -21,6 +21,6 @@ namespace ur {
         public:
             Game(players::Player& white, players::Player& black);
             players::Player& get_player();
-            int play();
+            Color play();
     };
 }

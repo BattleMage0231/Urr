@@ -15,6 +15,8 @@ namespace ur {
         }
         white_rem = orig.white_rem;
         black_rem = orig.black_rem;
+        white_done = orig.white_done;
+        black_done = orig.black_done;
     }
 
     bool* Board::get_pieces(Color turn) {
@@ -23,6 +25,10 @@ namespace ur {
 
     int& Board::get_rem(Color turn) {
         return (turn == Color::WHITE) ? white_rem : black_rem;
+    }
+
+    int& Board::get_done(Color turn) {
+        return (turn == Color::WHITE) ? white_done : black_done;
     }
 
     bool Board::is_vulnerable(int tile, Color turn) {
@@ -84,30 +90,17 @@ namespace ur {
         return false;
     }
 
-    int Board::winner() {
-        bool white = (white_rem == 0);
-        bool black = (black_rem == 0);
-        if(!white && !black) {
-            return 0;
-        }
-        for(int i = 0; i < BOARD_SIZE; ++i) {
-            if(white_pieces[i]) {
-                white = false;
-            }
-            if(black_pieces[i]) {
-                black = false;
-            }
-        }
-        if(white) {
-            return 1;
-        }
-        if(black) {
-            return 2;
-        }
-        return 0;
+    bool Board::finished() {
+        return white_done == NUM_PIECES || black_done == NUM_PIECES;
     }
 
-    // TODO change this to depend on NUM_PIECES and BOARD_SIZE
+    Color Board::get_winner() {
+        if(!finished()) {
+            throw;
+        }
+        return (white_done == NUM_PIECES) ? Color::WHITE : Color::BLACK;
+    }
+
     void Board::display_board() {
         using std::cout;
         using std::endl;
@@ -218,6 +211,7 @@ namespace ur {
             ++get_rem(mov.turn);
         } else if(mov.loc == BOARD_SIZE) {
             pieces[mov.orig] = true;
+            --get_done(mov.turn);
         } else {
             pieces[mov.loc] = false;
             pieces[mov.orig] = true;
@@ -253,6 +247,7 @@ namespace ur {
         if(orig != loc) {
             if(loc == BOARD_SIZE) {
                 pieces[orig] = false;
+                ++get_done(turn);
             } else if(orig == OFF_BOARD) {
                 --get_rem(turn);
                 pieces[loc] = true;
