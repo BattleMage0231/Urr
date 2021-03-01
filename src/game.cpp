@@ -40,6 +40,7 @@ namespace ur {
         }
         int tile = get_move(roll);
         while(!b.is_valid(roll, tile, turn)) {
+            std::cout << "INVALID " << tile << " " << roll << " " << (int) turn << std::endl;
             tile = get_move(roll);
         }
         display_move(roll, tile);

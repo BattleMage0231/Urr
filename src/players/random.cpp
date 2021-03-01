@@ -5,7 +5,7 @@ namespace ur {
         RandomPlayer::RandomPlayer(Color turn) {}
 
         int RandomPlayer::get_move(Board b, int roll) {
-            return (rand() % (NUM_PIECES + 1)) - 1;
+            return (rand() % (BOARD_SIZE + 1)) - 1;
         }
     }
 }

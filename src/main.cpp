@@ -1,4 +1,5 @@
-#include <ur/ur.h>
+#include <ur/players.h>
+#include <ur/game.h>
 
 #include <ctime>
 #include <cstdlib>

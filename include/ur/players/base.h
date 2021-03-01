@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ur/board.h>
+
 namespace ur {
     namespace players {
         class Player {
