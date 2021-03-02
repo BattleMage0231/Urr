@@ -20,7 +20,7 @@ namespace ur {
             bool* get_pieces(Color turn);
             int& get_rem(Color turn);
             int& get_done(Color turn);
-            bool is_vulnerable(int tile, Color turn);
+            bool is_invulnerable(int tile, Color turn);
             bool has_valid(int roll, Color turn);
             bool is_valid(int roll, int tile, Color turn);
             bool finished();

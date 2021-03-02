@@ -11,11 +11,18 @@ namespace ur {
     namespace players {
         class AIPlayer : public virtual Player {
             private:
+                struct Node {
+                    int pos;
+                    double value;
+
+                    bool operator <(const Node& other) const;
+                };
+
                 Color player_turn;
 
                 int any_free(Board& b, Color turn);
                 double get_avg(Board& b, int depth, Color turn, double alpha, double beta);
-                std::pair<double, int> negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta);
+                Node negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta);
             public:
                 AIPlayer(Color turn);
                 double value_of(Board& b, Color turn);

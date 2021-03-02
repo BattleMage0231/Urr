@@ -14,14 +14,13 @@ int main(int argc, char* argv[]) {
         seed = std::atoi(argv[1]);
     }
     cout << "Seed: " << seed << endl;
-    /*
     // test one
     srand(seed);
     ur::players::AIPlayer h(ur::Color::WHITE);
     ur::players::RandomPlayer r(ur::Color::BLACK);
     ur::Game game(h, r);
     cout << (game.play() == ur::Color::WHITE ? "WHITE WON" : "BLACK WON") << endl;
-    */
+    /*
     // test multiple
     int total = 0;
     int beat = 0;
@@ -48,6 +47,7 @@ int main(int argc, char* argv[]) {
         cout << "Finished match " << i + 1 << " with " << (double) beat / total << endl;
     }
     cout << (double) beat / total << endl;
+    */
     cout << "Program end." << endl;
     return 0;
 }

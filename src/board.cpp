@@ -31,9 +31,8 @@ namespace ur {
         return (turn == Color::WHITE) ? white_done : black_done;
     }
 
-    bool Board::is_vulnerable(int tile, Color turn) {
-        bool* opp_pieces = get_pieces(opposite(turn));
-        return !(is_competition(tile) && is_rosette(tile) && opp_pieces[tile]);
+    bool Board::is_invulnerable(int tile, Color turn) {
+        return is_competition(tile) && is_rosette(tile) && get_pieces(turn)[tile];
     }
 
     bool Board::has_valid(int roll, Color turn) {
@@ -52,7 +51,7 @@ namespace ur {
                     return true;
                 } else if(is_board(i + roll)) {
                     if(!pieces[i + roll]) {
-                        if(is_vulnerable(i + roll, turn)) {
+                        if(!is_invulnerable(i + roll, opposite(turn))) {
                             return true;
                         }
                     }
@@ -82,7 +81,7 @@ namespace ur {
             if(tile + roll == BOARD_SIZE) {
                 return true;
             } else if(is_board(tile + roll)) {
-                return !pieces[tile + roll] && is_vulnerable(tile + roll, turn);
+                return !pieces[tile + roll] && !is_invulnerable(tile + roll, opposite(turn));
             } else {
                 return false;
             }

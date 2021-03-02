@@ -26,13 +26,13 @@ namespace ur {
     }
 
     void Game::make_move() {
-        //b.display_board();
+        b.display_board();
         int roll = 0;
         for(int i = 0; i < NUM_DICE; ++i) {
             roll += rand() % 2;
         }
         if(!b.has_valid(roll, turn)) {
-            //display_skip(roll);
+            display_skip(roll);
             b.no_moves(turn);
             turn = opposite(turn);
             return;
@@ -41,7 +41,7 @@ namespace ur {
         while(!b.is_valid(roll, tile, turn)) {
             tile = get_move(roll);
         }
-        //display_move(roll, tile);
+        display_move(roll, tile);
         b.move_piece(tile, tile + roll, turn);
         if(!is_rosette(tile + roll)) {
             turn = opposite(turn);

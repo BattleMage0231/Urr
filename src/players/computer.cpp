@@ -2,6 +2,10 @@
 
 namespace ur {
     namespace players {
+        bool AIPlayer::Node::operator <(const AIPlayer::Node& other) const {
+            return value < other.value;
+        }
+
         AIPlayer::AIPlayer(Color turn) {
             player_turn = turn;
         }
@@ -23,45 +27,56 @@ namespace ur {
             double rates[] = {0.0625, 0.25, 0.375, 0.25, 0.0625};
             double ans = 0;
             for(int i = 0; i <= NUM_DICE; ++i) {
-                ans += rates[i] * negamax(b, i, turn, depth, alpha, beta).second;
+                ans += rates[i] * negamax(b, i, turn, depth, alpha, beta).value;
             }
             return ans;
         }
 
-        std::pair<double, int> AIPlayer::negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta) {
+        AIPlayer::Node AIPlayer::negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta) {
             if(b.finished() || depth > 4) {
-                return std::make_pair(NULL_POS, value_of(b, turn));
+                return Node {
+                    .pos = NULL_POS,
+                    .value = value_of(b, turn)
+                };
             }
             if(roll == 0) {
                 int free_piece = any_free(b, turn);
                 b.move_piece(free_piece, free_piece + roll, turn);
                 double avg = -get_avg(b, depth + 1, opposite(turn), -beta, -alpha);
                 b.undo_last();
-                return std::make_pair(free_piece, avg);
+                return Node {
+                    .pos = free_piece,
+                    .value = avg
+                };
             }
             if(!b.has_valid(roll, turn)) {
                 b.no_moves(turn);
                 double avg = -get_avg(b, depth + 1, opposite(turn), -beta, -alpha);
                 b.undo_last();
-                return std::make_pair(NULL_POS, avg);
+                return Node {
+                    .pos = NULL_POS,
+                    .value = avg
+                };
             }
-            std::vector<std::pair<double, int>> moves;
+            std::vector<Node> moves;
             for(int i = OFF_BOARD; i < BOARD_SIZE; ++i) {
                 if(b.is_valid(roll, i, turn)) {
                     b.move_piece(i, i + roll, turn);
+                    Node cur { .pos = i };
                     if(!is_rosette(i + roll)) {
-                        moves.push_back(std::make_pair(-value_of(b, opposite(turn)), i));
+                        cur.value = -value_of(b, opposite(turn));
                     } else {
-                        moves.push_back(std::make_pair(value_of(b, turn), i));
+                        cur.value = value_of(b, turn);
                     }
+                    moves.push_back(cur);
                     b.undo_last();
                 }
             }
             std::sort(moves.begin(), moves.end());
             double cmax = NEGINF;
             int mmax = NULL_POS;
-            for(int i = (int) moves.size() - 1; i >= 0; --i) {
-                int tile = moves[i].second;
+            for(auto it = moves.rbegin(); it != moves.rend(); ++it) {
+                int tile = (*it).pos;
                 b.move_piece(tile, tile + roll, turn);
                 double ans;
                 if(!is_rosette(tile + roll)) {
@@ -79,7 +94,10 @@ namespace ur {
                     break;
                 }
             }
-            return std::make_pair(mmax, cmax);
+            return Node {
+                .pos = mmax,
+                .value = cmax
+            };
         }
 
         double AIPlayer::value_of(Board& b, Color turn) {
@@ -112,7 +130,7 @@ namespace ur {
             if(roll == 0) {
                 return any_free(b, player_turn);
             }
-            return negamax(b, roll, player_turn, 0, NEGINF, INF).first;
+            return negamax(b, roll, player_turn, 0, NEGINF, INF).pos;
         }
     }
 }
