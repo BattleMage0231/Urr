@@ -1,56 +1,52 @@
 #include <ur/board.h>
 
+#define rem(turn) ((turn == Color::WHITE) ? white_rem : black_rem)
+#define done(turn) ((turn == Color::WHITE) ? white_done : black_done)
+#define pieces(turn) ((turn == Color::WHITE) ? white_pieces : black_pieces)
+
 namespace ur {
-    Board::Board() {
-        for(int i = 0; i < BOARD_SIZE; ++i) {
-            white_pieces[i] = false;
-            black_pieces[i] = false;
-        }
-    }
+    Board::Board() {}
 
     Board::Board(const Board& orig) {
-        for(int i = 0; i < BOARD_SIZE; ++i) {
-            white_pieces[i] = orig.white_pieces[i];
-            black_pieces[i] = orig.black_pieces[i];
-        }
+        // copy constructor
+        white_pieces = orig.white_pieces;
+        black_pieces = orig.black_pieces;
         white_rem = orig.white_rem;
         black_rem = orig.black_rem;
         white_done = orig.white_done;
         black_done = orig.black_done;
     }
 
-    bool* Board::get_pieces(Color turn) {
-        return (turn == Color::WHITE) ? white_pieces : black_pieces;
+    bool Board::has_piece(int tile, Color turn) {
+        return pieces(turn).at(tile);
     }
 
-    int& Board::get_rem(Color turn) {
+    int Board::get_rem(Color turn) {
         return (turn == Color::WHITE) ? white_rem : black_rem;
     }
 
-    int& Board::get_done(Color turn) {
+    int Board::get_done(Color turn) {
         return (turn == Color::WHITE) ? white_done : black_done;
     }
 
     bool Board::is_invulnerable(int tile, Color turn) {
-        return is_competition(tile) && is_rosette(tile) && get_pieces(turn)[tile];
+        return is_competition(tile) && is_rosette(tile) && has_piece(tile, turn);
     }
 
     bool Board::has_valid(int roll, Color turn) {
-        bool* pieces = get_pieces(turn);
         int rem = get_rem(turn);
-        bool* opp_pieces = get_pieces(opposite(turn));
         if(roll == 0) {
             return true;
         }
-        if(rem > 0 && !pieces[roll - 1]) {
+        if(rem > 0 && !has_piece(roll - 1, turn)) {
             return true;
         }
         for(int i = 0; i < BOARD_SIZE; ++i) {
-            if(pieces[i]) {
+            if(has_piece(i, turn)) {
                 if(i + roll == BOARD_SIZE) {
                     return true;
                 } else if(is_board(i + roll)) {
-                    if(!pieces[i + roll]) {
+                    if(!has_piece(i + roll, turn)) {
                         if(!is_invulnerable(i + roll, opposite(turn))) {
                             return true;
                         }
@@ -62,26 +58,24 @@ namespace ur {
     }
 
     bool Board::is_valid(int roll, int tile, Color turn) {
-        bool* pieces = get_pieces(turn);
         int rem = get_rem(turn);
-        bool* opp_pieces = get_pieces(opposite(turn));
         if(roll == 0) {
             if(tile == OFF_BOARD && rem > 0) {
                 return true;
             }
-            if(is_board(tile) && pieces[tile]) {
+            if(is_board(tile) && has_piece(tile, turn)) {
                 return true;
             }
             return false;
         }
         if(tile == OFF_BOARD) {
-            return rem > 0 && !pieces[roll - 1];
+            return rem > 0 && !has_piece(roll - 1, turn);
         }
-        if(pieces[tile]) {
+        if(has_piece(tile, turn)) {
             if(tile + roll == BOARD_SIZE) {
                 return true;
             } else if(is_board(tile + roll)) {
-                return !pieces[tile + roll] && !is_invulnerable(tile + roll, opposite(turn));
+                return !has_piece(tile + roll, turn) && !is_invulnerable(tile + roll, opposite(turn));
             } else {
                 return false;
             }
@@ -200,24 +194,22 @@ namespace ur {
     void Board::undo_last() {
         Move mov = moves.back();
         moves.pop_back();
-        bool* pieces = get_pieces(mov.turn);
-        bool* opp_pieces = get_pieces(opposite(mov.turn));
         if(!mov.has_move || mov.orig == mov.loc) {
             return;
         }
         if(mov.orig == OFF_BOARD) {
-            pieces[mov.loc] = false;
-            ++get_rem(mov.turn);
+            pieces(mov.turn)[mov.loc] = false;
+            ++rem(mov.turn);
         } else if(mov.loc == BOARD_SIZE) {
-            pieces[mov.orig] = true;
-            --get_done(mov.turn);
+            pieces(mov.turn)[mov.orig] = true;
+            --done(mov.turn);
         } else {
-            pieces[mov.loc] = false;
-            pieces[mov.orig] = true;
+            pieces(mov.turn)[mov.loc] = false;
+            pieces(mov.turn)[mov.orig] = true;
         }
         if(mov.took_piece) {
-            --get_rem(opposite(mov.turn));
-            opp_pieces[mov.loc] = true;
+            --rem(opposite(mov.turn));
+            pieces(opposite(mov.turn))[mov.loc] = true;
         }
     }
 
@@ -232,10 +224,6 @@ namespace ur {
     }
 
     void Board::move_piece(int orig, int loc, Color turn) {
-        bool* pieces = get_pieces(turn);
-        int rem = get_rem(turn);
-        bool* opp_pieces = get_pieces(opposite(turn));
-        int opp_rem = get_rem(opposite(turn));
         Move mov {
             .has_move = true,
             .turn = turn,
@@ -245,22 +233,22 @@ namespace ur {
         };
         if(orig != loc) {
             if(loc == BOARD_SIZE) {
-                pieces[orig] = false;
-                ++get_done(turn);
+                pieces(turn)[orig] = false;
+                ++done(turn);
             } else if(orig == OFF_BOARD) {
-                --get_rem(turn);
-                pieces[loc] = true;
-                if(is_competition(loc) && opp_pieces[loc]) {
-                    ++get_rem(opposite(turn));
-                    opp_pieces[loc] = false;
+                --rem(turn);
+                pieces(turn)[loc] = true;
+                if(is_competition(loc) && has_piece(loc, opposite(turn))) {
+                    ++rem(opposite(turn));
+                    pieces(opposite(turn))[loc] = false;
                     mov.took_piece = true;
                 }
             } else {
-                pieces[orig] = false;
-                pieces[loc] = true;
-                if(is_competition(loc) && opp_pieces[loc]) {
-                    ++get_rem(opposite(turn));
-                    opp_pieces[loc] = false;
+                pieces(turn)[orig] = false;
+                pieces(turn)[loc] = true;
+                if(is_competition(loc) && has_piece(loc, opposite(turn))) {
+                    ++rem(opposite(turn));
+                    pieces(opposite(turn))[loc] = false;
                     mov.took_piece = true;
                 }
             }

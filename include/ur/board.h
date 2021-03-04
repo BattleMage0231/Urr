@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <iostream>
 #include <vector>
 #include <ur/utils.h>
@@ -7,8 +8,8 @@
 namespace ur {
     class Board {
         private:
-            bool white_pieces[BOARD_SIZE];
-            bool black_pieces[BOARD_SIZE];
+            std::array<bool, BOARD_SIZE> white_pieces;
+            std::array<bool, BOARD_SIZE> black_pieces;
             int white_rem = NUM_PIECES;
             int black_rem = NUM_PIECES;
             int white_done = 0;
@@ -17,9 +18,9 @@ namespace ur {
         public:
             Board();
             Board(const Board& orig);
-            bool* get_pieces(Color turn);
-            int& get_rem(Color turn);
-            int& get_done(Color turn);
+            bool has_piece(int tile, Color turn);
+            int get_rem(Color turn);
+            int get_done(Color turn);
             bool is_invulnerable(int tile, Color turn);
             bool has_valid(int roll, Color turn);
             bool is_valid(int roll, int tile, Color turn);

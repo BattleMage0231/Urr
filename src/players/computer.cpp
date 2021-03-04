@@ -15,9 +15,8 @@ namespace ur {
             if(b.get_rem(turn) > 0) {
                 return OFF_BOARD;
             }
-            bool* pieces = b.get_pieces(turn);
             for(int i = 0; i < BOARD_SIZE; ++i) {
-                if(pieces[i]) {
+                if(b.has_piece(i, turn)) {
                     return i;
                 }
             }
@@ -102,28 +101,24 @@ namespace ur {
         }
 
         double AIPlayer::value_of(Board& b, Color turn) {
-            bool* pieces = b.get_pieces(turn);
-            int rem = b.get_rem(turn);
-            bool* opp_pieces = b.get_pieces(opposite(turn));
-            int opp_rem = b.get_rem(opposite(turn));
-            int board = 0;
-            int opp_board = 0;
             double val = 0;
             double loc_vals[BOARD_SIZE] = {
                 1.02, 1.30, 1.27, 1.93, 1.28, 1.33, 1.38, 2.38, 1.46, 1.44, 1.38, 1.35, 2.20, 1.75
             };
             for(int i = 0; i < BOARD_SIZE; ++i) {
-                if(pieces[i]) {
-                    ++board;
+                if(b.has_piece(i, turn)) {
                     val += loc_vals[i];
                 }
-                if(opp_pieces[i]) {
-                    ++opp_board;
+                if(b.has_piece(i, opposite(turn))) {
                     val -= loc_vals[i];
                 }
             }
+            int rem = b.get_rem(turn);
+            int opp_rem = b.get_rem(opposite(turn));
             int done = b.get_done(turn);
             int opp_done = b.get_done(opposite(turn));
+            int board = NUM_PIECES - rem - done;
+            int opp_board = NUM_PIECES - opp_rem - opp_done;
             return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
         }
 
