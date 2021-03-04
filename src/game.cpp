@@ -8,21 +8,17 @@ namespace ur {
         , display(display)
     {}
 
-    players::Player& Game::get_player() {
-        return (turn == Color::WHITE) ? white_player : black_player;
-    }
-
-    int Game::get_move(int roll) {
+    int Game::get_move(int roll) const {
         Board clone(b);
         return get_player().get_move(clone, roll);
     }
 
-    void Game::display_move(int roll, int tile) {
+    void Game::display_move(int roll, int tile) const {
         std::cout << turn << " played " << tile;
         std::cout << " with roll " << roll << std::endl;
     }
 
-    void Game::display_skip(int roll) {
+    void Game::display_skip(int roll) const {
         std::cout << turn << " had no valid moves for roll " << roll << std::endl;
     }
 
@@ -47,6 +43,10 @@ namespace ur {
         if(!is_rosette(tile + roll)) {
             turn = opposite(turn);
         }
+    }
+
+    players::Player& Game::get_player() const {
+        return (turn == Color::WHITE) ? white_player : black_player;
     }
 
     Color Game::play() {

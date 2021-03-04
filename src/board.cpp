@@ -26,23 +26,23 @@ namespace ur {
         black_pieces = orig.black_pieces;
     }
 
-    bool Board::has_piece(int tile, Color turn) {
+    bool Board::has_piece(int tile, Color turn) const {
         return pieces(turn).at(tile);
     }
 
-    int Board::get_rem(Color turn) {
+    int Board::get_rem(Color turn) const {
         return (turn == Color::WHITE) ? white_rem : black_rem;
     }
 
-    int Board::get_done(Color turn) {
+    int Board::get_done(Color turn) const {
         return (turn == Color::WHITE) ? white_done : black_done;
     }
 
-    bool Board::is_invulnerable(int tile, Color turn) {
+    bool Board::is_invulnerable(int tile, Color turn) const {
         return is_competition(tile) && is_rosette(tile) && has_piece(tile, turn);
     }
 
-    bool Board::has_valid(int roll, Color turn) {
+    bool Board::has_valid(int roll, Color turn) const {
         if(roll < 0) {
             throw std::invalid_argument("Roll value must be non-negative");
         }
@@ -69,7 +69,7 @@ namespace ur {
         return false;
     }
 
-    bool Board::is_valid(int roll, int tile, Color turn) {
+    bool Board::is_valid(int roll, int tile, Color turn) const {
         if(roll < 0) {
             throw std::invalid_argument("Roll value must be non-negative");
         }
@@ -101,18 +101,18 @@ namespace ur {
         return false;
     }
 
-    bool Board::finished() {
+    bool Board::finished() const {
         return white_done == NUM_PIECES || black_done == NUM_PIECES;
     }
 
-    Color Board::get_winner() {
+    Color Board::get_winner() const {
         if(!finished()) {
             throw std::logic_error("Game must have finished to call get_winner");
         }
         return (white_done == NUM_PIECES) ? Color::WHITE : Color::BLACK;
     }
 
-    void Board::display_board() {
+    void Board::display_board() const {
         int idx = 0;
         while(!is_competition(idx)) {
             if(white_pieces[idx]) {
@@ -240,7 +240,7 @@ namespace ur {
     }
 
     void Board::move_piece(int orig, int loc, Color turn) {
-        if(!tile_exists(orig) || !tile_exists(loc)) {
+        if(!tile_exists(orig) || (!tile_exists(loc) && loc != 14)) {
             throw std::invalid_argument("Tile must be a valid value");
         }
         Move mov {

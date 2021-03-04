@@ -22,12 +22,12 @@ namespace ur {
                 unsigned max_depth;
                 Color player_turn;
 
-                int any_free(Board& b, Color turn);
-                double get_avg(Board& b, unsigned depth, Color turn, double alpha, double beta);
-                Node negamax(Board& b, int roll, Color turn, unsigned depth, double alpha, double beta);
+                int any_free(Board& b, Color turn) const;
+                double get_avg(Board& b, unsigned depth, Color turn, double alpha, double beta) const;
+                Node negamax(Board& b, int roll, Color turn, unsigned depth, double alpha, double beta) const;
             public:
                 AIPlayer(Color turn, unsigned max_depth);
-                double value_of(Board& b, Color turn);
+                double value_of(Board& b, Color turn) const;
                 int get_move(Board b, int roll);
         };
     }

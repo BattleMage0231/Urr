@@ -19,15 +19,15 @@ namespace ur {
         public:
             Board();
             Board(const Board& orig);
-            bool has_piece(int tile, Color turn);
-            int get_rem(Color turn);
-            int get_done(Color turn);
-            bool is_invulnerable(int tile, Color turn);
-            bool has_valid(int roll, Color turn);
-            bool is_valid(int roll, int tile, Color turn);
-            bool finished();
-            Color get_winner();
-            void display_board();
+            bool has_piece(int tile, Color turn) const;
+            int get_rem(Color turn) const;
+            int get_done(Color turn) const;
+            bool is_invulnerable(int tile, Color turn) const;
+            bool has_valid(int roll, Color turn) const;
+            bool is_valid(int roll, int tile, Color turn) const;
+            bool finished() const;
+            Color get_winner() const;
+            void display_board() const;
             void undo_last();
             void no_moves(Color turn);
             void move_piece(int orig, int loc, Color turn);
