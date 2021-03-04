@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 #include <ur/utils.h>

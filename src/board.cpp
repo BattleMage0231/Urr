@@ -10,7 +10,10 @@ namespace ur {
         , black_rem(NUM_PIECES)
         , white_done(0)
         , black_done(0)
-    {}
+    {
+        white_pieces.fill(false);
+        black_pieces.fill(false);
+    }
 
     Board::Board(const Board& orig) 
         : white_rem(orig.white_rem)
@@ -40,6 +43,9 @@ namespace ur {
     }
 
     bool Board::has_valid(int roll, Color turn) {
+        if(roll < 0) {
+            throw std::invalid_argument("Roll value must be non-negative");
+        }
         int rem = get_rem(turn);
         if(roll == 0) {
             return true;
@@ -64,6 +70,12 @@ namespace ur {
     }
 
     bool Board::is_valid(int roll, int tile, Color turn) {
+        if(roll < 0) {
+            throw std::invalid_argument("Roll value must be non-negative");
+        }
+        if(!tile_exists(tile)) {
+            throw std::invalid_argument("Tile must be a valid value");
+        }
         int rem = get_rem(turn);
         if(roll == 0) {
             if(tile == OFF_BOARD && rem > 0) {
@@ -95,7 +107,7 @@ namespace ur {
 
     Color Board::get_winner() {
         if(!finished()) {
-            throw;
+            throw std::logic_error("Game must have finished to call get_winner");
         }
         return (white_done == NUM_PIECES) ? Color::WHITE : Color::BLACK;
     }
@@ -228,6 +240,9 @@ namespace ur {
     }
 
     void Board::move_piece(int orig, int loc, Color turn) {
+        if(!tile_exists(orig) || !tile_exists(loc)) {
+            throw std::invalid_argument("Tile must be a valid value");
+        }
         Move mov {
             .has_move = true,
             .turn = turn,

@@ -29,4 +29,5 @@ namespace ur {
     bool is_competition(int tile);
     bool is_rosette(int tile);
     bool is_board(int tile);
+    bool tile_exists(int tile);
 }

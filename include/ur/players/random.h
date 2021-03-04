@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <stdexcept>
 #include <ur/utils.h>
 #include <ur/board.h>
 #include <ur/players/base.h>

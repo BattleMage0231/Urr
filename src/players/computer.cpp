@@ -123,6 +123,9 @@ namespace ur {
         }
 
         int AIPlayer::get_move(Board b, int roll) {
+            if(roll < 0) {
+                throw std::invalid_argument("Roll value must be non-negative");
+            }
             if(roll == 0) {
                 return any_free(b, player_turn);
             }
