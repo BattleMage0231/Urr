@@ -11,8 +11,8 @@
 struct Args {
     std::string player1;
     std::string player2;
-    unsigned int seed;
-    int max_depth;
+    unsigned seed;
+    unsigned max_depth;
     bool rand;
     bool verbose;
     int games;
@@ -28,7 +28,7 @@ Args* parse_args(int argc, char* argv[]) {
     Args* args = new Args {
         .player1 = "",
         .player2 = "",
-        .seed = (unsigned int) time(nullptr),
+        .seed = (unsigned) time(nullptr),
         .max_depth = 4,
         .rand = false,
         .verbose = true,
@@ -54,7 +54,7 @@ Args* parse_args(int argc, char* argv[]) {
             case 'g': {
                 std::string input(optarg);
                 try {
-                    unsigned int games = static_cast<unsigned int>(std::stoul(input));
+                    unsigned games = static_cast<unsigned>(std::stoul(input));
                     args->games = games;
                 } catch(std::exception& e) {
                     invalid_args("Argument to -g must be a positive integer.");
@@ -64,20 +64,17 @@ Args* parse_args(int argc, char* argv[]) {
             case 's': {
                 std::string input(optarg);
                 try {
-                    unsigned int seed = static_cast<unsigned int>(std::stoul(input));
+                    unsigned seed = static_cast<unsigned>(std::stoul(input));
                     args->seed = seed;
                 } catch(std::exception& e) {
-                    invalid_args("Argument to -s must be a positive integer.");
+                    invalid_args("Argument to -s must be a non-negative integer.");
                 }
                 break;
             }
             case 'd': {
                 std::string input(optarg);
                 try {
-                    int max_depth = std::stoi(input);
-                    if(max_depth < 0) {
-                        invalid_args("Argument to -d must be a non-negative integer.");
-                    }
+                    unsigned max_depth = static_cast<unsigned>(std::stoul(input));
                     args->max_depth = max_depth;
                 } catch(std::exception& e) {
                     invalid_args("Argument to -d must be a non-negative integer.");

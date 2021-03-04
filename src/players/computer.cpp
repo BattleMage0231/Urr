@@ -6,7 +6,7 @@ namespace ur {
             return value < other.value;
         }
 
-        AIPlayer::AIPlayer(Color turn, int max_depth) 
+        AIPlayer::AIPlayer(Color turn, unsigned max_depth) 
             : player_turn(turn) 
             , max_depth(max_depth)
         {}
@@ -23,7 +23,7 @@ namespace ur {
             throw;
         }
 
-        double AIPlayer::get_avg(Board& b, int depth, Color turn, double alpha, double beta) {
+        double AIPlayer::get_avg(Board& b, unsigned depth, Color turn, double alpha, double beta) {
             double rates[] = {0.0625, 0.25, 0.375, 0.25, 0.0625};
             double ans = 0;
             for(int i = 0; i <= NUM_DICE; ++i) {
@@ -32,7 +32,7 @@ namespace ur {
             return ans;
         }
 
-        AIPlayer::Node AIPlayer::negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta) {
+        AIPlayer::Node AIPlayer::negamax(Board& b, int roll, Color turn, unsigned depth, double alpha, double beta) {
             if(b.finished() || depth > max_depth) {
                 return Node {
                     .pos = NULL_POS,
@@ -126,7 +126,7 @@ namespace ur {
             if(roll == 0) {
                 return any_free(b, player_turn);
             }
-            return negamax(b, roll, player_turn, 0, NEGINF, INF).pos;
+            return negamax(b, roll, player_turn, 0U, NEGINF, INF).pos;
         }
     }
 }
