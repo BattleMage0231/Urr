@@ -28,7 +28,7 @@ namespace ur {
             public:
                 AIPlayer(Color turn, unsigned max_depth);
                 double value_of(Board& b, Color turn) const;
-                int get_move(Board b, int roll);
+                int get_move(Board b, int roll) override;
         };
     }
 }

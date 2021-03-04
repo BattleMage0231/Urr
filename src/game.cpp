@@ -1,7 +1,7 @@
 #include <ur/game.h>
 
 namespace ur {
-    Game::Game(players::Player& white, players::Player& black, bool display) 
+    Game::Game(players::Player& white, players::Player& black, bool display) noexcept 
         : white_player(white)
         , black_player(black)
         , turn(Color::WHITE) 
@@ -13,12 +13,12 @@ namespace ur {
         return get_player().get_move(clone, roll);
     }
 
-    void Game::display_move(int roll, int tile) const {
+    void Game::display_move(int roll, int tile) const noexcept {
         std::cout << turn << " played " << tile;
         std::cout << " with roll " << roll << std::endl;
     }
 
-    void Game::display_skip(int roll) const {
+    void Game::display_skip(int roll) const noexcept {
         std::cout << turn << " had no valid moves for roll " << roll << std::endl;
     }
 
@@ -45,7 +45,7 @@ namespace ur {
         }
     }
 
-    players::Player& Game::get_player() const {
+    players::Player& Game::get_player() const noexcept {
         return (turn == Color::WHITE) ? white_player : black_player;
     }
 

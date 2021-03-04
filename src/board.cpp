@@ -5,7 +5,7 @@
 #define pieces(turn) ((turn == Color::WHITE) ? white_pieces : black_pieces)
 
 namespace ur {
-    Board::Board() 
+    Board::Board() noexcept
         : white_rem(NUM_PIECES)
         , black_rem(NUM_PIECES)
         , white_done(0)
@@ -15,7 +15,7 @@ namespace ur {
         black_pieces.fill(false);
     }
 
-    Board::Board(const Board& orig) 
+    Board::Board(const Board& orig) noexcept 
         : white_rem(orig.white_rem)
         , black_rem(orig.black_rem)
         , white_done(orig.white_done)
@@ -30,11 +30,11 @@ namespace ur {
         return pieces(turn).at(tile);
     }
 
-    int Board::get_rem(Color turn) const {
+    int Board::get_rem(Color turn) const noexcept {
         return (turn == Color::WHITE) ? white_rem : black_rem;
     }
 
-    int Board::get_done(Color turn) const {
+    int Board::get_done(Color turn) const noexcept {
         return (turn == Color::WHITE) ? white_done : black_done;
     }
 
@@ -101,7 +101,7 @@ namespace ur {
         return false;
     }
 
-    bool Board::finished() const {
+    bool Board::finished() const noexcept {
         return white_done == NUM_PIECES || black_done == NUM_PIECES;
     }
 
@@ -112,7 +112,7 @@ namespace ur {
         return (white_done == NUM_PIECES) ? Color::WHITE : Color::BLACK;
     }
 
-    void Board::display_board() const {
+    void Board::display_board() const noexcept {
         int idx = 0;
         while(!is_competition(idx)) {
             if(white_pieces[idx]) {
@@ -274,6 +274,4 @@ namespace ur {
         }
         moves.push_back(mov);
     }
-
-    Board::~Board() {}
 }

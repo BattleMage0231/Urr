@@ -11,7 +11,7 @@ namespace ur {
         class RandomPlayer : public virtual Player {
             public:
                 RandomPlayer(Color turn);
-                int get_move(Board b, int roll);
+                int get_move(Board b, int roll) override;
         };
     }
 }

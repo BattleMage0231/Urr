@@ -16,12 +16,12 @@ namespace ur {
             Color turn;
 
             int get_move(int roll) const;
-            void display_move(int roll, int tile) const;
-            void display_skip(int roll) const;
+            void display_move(int roll, int tile) const noexcept;
+            void display_skip(int roll) const noexcept;
             void make_move();
         public:
-            Game(players::Player& white, players::Player& black, bool display);
-            players::Player& get_player() const;
+            Game(players::Player& white, players::Player& black, bool display) noexcept;
+            players::Player& get_player() const noexcept;
             Color play();
     };
 }

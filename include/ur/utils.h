@@ -17,7 +17,7 @@ namespace ur {
     enum class Color { WHITE, BLACK };
 
     std::ostream& operator<<(std::ostream& str, Color const& c);
-    Color opposite(Color orig);
+    Color opposite(Color orig) noexcept;
 
     struct Move {
         bool has_move;
@@ -26,8 +26,8 @@ namespace ur {
         bool took_piece;
     };
 
-    bool is_competition(int tile);
-    bool is_rosette(int tile);
-    bool is_board(int tile);
-    bool tile_exists(int tile);
+    bool is_competition(int tile) noexcept;
+    bool is_rosette(int tile) noexcept;
+    bool is_board(int tile) noexcept;
+    bool tile_exists(int tile) noexcept;
 }
