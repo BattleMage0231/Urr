@@ -18,13 +18,14 @@ namespace ur {
                     bool operator <(const Node& other) const;
                 };
 
+                int max_depth;
                 Color player_turn;
 
                 int any_free(Board& b, Color turn);
                 double get_avg(Board& b, int depth, Color turn, double alpha, double beta);
                 Node negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta);
             public:
-                AIPlayer(Color turn);
+                AIPlayer(Color turn, int max_depth);
                 double value_of(Board& b, Color turn);
                 int get_move(Board b, int roll);
         };

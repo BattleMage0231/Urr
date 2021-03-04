@@ -9,6 +9,7 @@
 namespace ur {
     class Game {
         private:
+            bool display;
             Board b;
             players::Player& white_player;
             players::Player& black_player;
@@ -19,7 +20,7 @@ namespace ur {
             void display_skip(int roll);
             void make_move();
         public:
-            Game(players::Player& white, players::Player& black);
+            Game(players::Player& white, players::Player& black, bool display);
             players::Player& get_player();
             Color play();
     };

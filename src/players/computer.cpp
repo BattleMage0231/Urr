@@ -6,9 +6,10 @@ namespace ur {
             return value < other.value;
         }
 
-        AIPlayer::AIPlayer(Color turn) {
-            player_turn = turn;
-        }
+        AIPlayer::AIPlayer(Color turn, int max_depth) 
+            : player_turn(turn) 
+            , max_depth(max_depth)
+        {}
 
         int AIPlayer::any_free(Board& b, Color turn) {
             if(b.get_rem(turn) > 0) {
@@ -33,7 +34,7 @@ namespace ur {
         }
 
         AIPlayer::Node AIPlayer::negamax(Board& b, int roll, Color turn, int depth, double alpha, double beta) {
-            if(b.finished() || depth > 4) {
+            if(b.finished() || depth > max_depth) {
                 return Node {
                     .pos = NULL_POS,
                     .value = value_of(b, turn)

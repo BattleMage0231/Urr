@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <limits>
 
 namespace ur {
@@ -15,6 +16,7 @@ namespace ur {
 
     enum class Color { WHITE, BLACK };
 
+    std::ostream& operator<<(std::ostream& str, Color const& c);
     Color opposite(Color orig);
 
     struct Move {

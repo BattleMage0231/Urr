@@ -1,6 +1,10 @@
 #include <ur/utils.h>
 
 namespace ur {
+    std::ostream& operator<<(std::ostream& os, Color const& c) {
+        return os << (c == Color::WHITE ? "WHITE" : "BLACK");
+    };
+
     Color opposite(Color t) {
         return (t == Color::WHITE) ? Color::BLACK : Color::WHITE;
     }
