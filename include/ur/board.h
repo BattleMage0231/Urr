@@ -10,10 +10,10 @@ namespace ur {
         private:
             std::array<bool, BOARD_SIZE> white_pieces;
             std::array<bool, BOARD_SIZE> black_pieces;
-            int white_rem = NUM_PIECES;
-            int black_rem = NUM_PIECES;
-            int white_done = 0;
-            int black_done = 0;
+            int white_rem;
+            int black_rem;
+            int white_done;
+            int black_done;
             std::vector<Move> moves;
         public:
             Board();

@@ -2,9 +2,7 @@
 
 namespace ur {
     namespace players {
-        HumanPlayer::HumanPlayer(Color turn) {
-            player_turn = turn;
-        }
+        HumanPlayer::HumanPlayer(Color turn) : player_turn(turn) {}
 
         int HumanPlayer::get_move(Board b, int roll) {
             using std::cin;
