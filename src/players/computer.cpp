@@ -6,12 +6,17 @@ namespace ur {
             return value < other.value;
         }
 
+        AIPlayer::AIPlayer(Color turn)
+            : player_turn(turn) 
+            , max_depth(4U)
+        {}
+
         AIPlayer::AIPlayer(Color turn, unsigned max_depth)
             : player_turn(turn) 
             , max_depth(max_depth)
         {}
 
-        int AIPlayer::any_free(Board& b, Color turn) const {
+        int AIPlayer::any_free(const Board& b, Color turn) const {
             if(b.get_rem(turn) > 0) {
                 return OFF_BOARD;
             }
@@ -100,7 +105,7 @@ namespace ur {
             };
         }
 
-        double AIPlayer::value_of(Board& b, Color turn) const {
+        double AIPlayer::value_of(const Board& b, Color turn) const {
             double val = 0;
             double loc_vals[BOARD_SIZE] = {
                 1.02, 1.30, 1.27, 1.93, 1.28, 1.33, 1.38, 2.38, 1.46, 1.44, 1.38, 1.35, 2.20, 1.75
@@ -122,7 +127,7 @@ namespace ur {
             return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
         }
 
-        int AIPlayer::get_move(Board b, int roll) {
+        int AIPlayer::get_move(Board& b, int roll) {
             if(roll < 0) {
                 throw std::invalid_argument("Roll value must be non-negative");
             }

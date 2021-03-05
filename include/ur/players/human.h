@@ -12,8 +12,8 @@ namespace ur {
             private:
                 Color player_turn;
             public:
-                HumanPlayer(Color turn);
-                int get_move(Board b, int roll) override;
+                explicit HumanPlayer(Color turn);
+                int get_move(Board& b, int roll) override;
         };
     }
 }

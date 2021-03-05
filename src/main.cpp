@@ -5,8 +5,14 @@
 #include <ctime>
 #include <cstdlib>
 #include <exception>
+#include <memory>
 #include <stdlib.h>
 #include <unistd.h>
+
+#define err(msg) {                  \
+    std::cerr << msg << std::endl;  \
+    exit(1);                        \
+}
 
 struct Args {
     std::string player1;
@@ -18,12 +24,7 @@ struct Args {
     int games;
 };
 
-void invalid_args(std::string message) {
-    std::cerr << message << std::endl;
-    exit(1);
-}
-
-Args* parse_args(int argc, char* argv[]) {
+std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
     int opt;
     Args* args = new Args {
         .player1 = "",
@@ -44,10 +45,10 @@ Args* parse_args(int argc, char* argv[]) {
                     } else if(args->player2 == "") {
                         args->player2 = input;
                     } else {
-                        invalid_args("The maximum number of players in -p is 2.");
+                        err("The maximum number of players in -p is 2.");
                     }
                 } else {
-                    invalid_args("Invalid player identifier in -p.");
+                    err("Invalid player identifier in -p.");
                 }
                 break;
             }
@@ -57,7 +58,7 @@ Args* parse_args(int argc, char* argv[]) {
                     unsigned games = static_cast<unsigned>(std::stoul(input));
                     args->games = games;
                 } catch(std::exception& e) {
-                    invalid_args("Argument to -g must be a positive integer.");
+                    err("Argument to -g must be a positive integer.");
                 }
                 break;
             }
@@ -67,7 +68,7 @@ Args* parse_args(int argc, char* argv[]) {
                     unsigned seed = static_cast<unsigned>(std::stoul(input));
                     args->seed = seed;
                 } catch(std::exception& e) {
-                    invalid_args("Argument to -s must be a non-negative integer.");
+                    err("Argument to -s must be a non-negative integer.");
                 }
                 break;
             }
@@ -77,7 +78,7 @@ Args* parse_args(int argc, char* argv[]) {
                     unsigned max_depth = static_cast<unsigned>(std::stoul(input));
                     args->max_depth = max_depth;
                 } catch(std::exception& e) {
-                    invalid_args("Argument to -d must be a non-negative integer.");
+                    err("Argument to -d must be a non-negative integer.");
                 }
                 break;
             }
@@ -106,16 +107,16 @@ Args* parse_args(int argc, char* argv[]) {
     if(args->player2 == "") {
         args->player2 = "AI";
     }
-    return args;
+    return std::unique_ptr<Args>(args);
 }
 
-ur::players::Player* from_id(std::string id, ur::Color turn, int max_depth) {
+std::unique_ptr<ur::players::Player> from_id(const std::string& id, ur::Color turn, int max_depth) {
     if(id == "AI") {
-        return new ur::players::AIPlayer(turn, max_depth);
+        return std::unique_ptr<ur::players::Player>(new ur::players::AIPlayer(turn, max_depth));
     } else if(id == "HUMAN") {
-        return new ur::players::HumanPlayer(turn);
+        return std::unique_ptr<ur::players::Player>(new ur::players::HumanPlayer(turn));
     } else if(id == "RANDOM") {
-        return new ur::players::RandomPlayer(turn);
+        return std::unique_ptr<ur::players::Player>(new ur::players::RandomPlayer(turn));
     }
     throw;
 }
@@ -123,7 +124,7 @@ ur::players::Player* from_id(std::string id, ur::Color turn, int max_depth) {
 int main(int argc, char* argv[]) {
     using std::cout;
     using std::endl;
-    const Args* args = parse_args(argc, argv);
+    const std::unique_ptr<Args> args = parse_args(argc, argv);
     srand(args->seed);
     int score1 = 0;
     int score2 = 0;
@@ -136,8 +137,8 @@ int main(int argc, char* argv[]) {
         if(p1_color == 1) {
             color = ur::Color::BLACK;
         }
-        ur::players::Player* white;
-        ur::players::Player* black;
+        std::unique_ptr<ur::players::Player> white;
+        std::unique_ptr<ur::players::Player> black;
         if(color == ur::Color::WHITE) {
             // p1 is white
             white = from_id(args->player1, ur::Color::WHITE, args->max_depth);
@@ -150,8 +151,6 @@ int main(int argc, char* argv[]) {
         ur::Game game(*white, *black, args->verbose);
         std::cout << "Started playing game " << i + 1 << std::endl;
         ur::Color winner = game.play();
-        delete white;
-        delete black;
         if(color == winner) {
             ++score1;
             std::cout << "Player 1 won game " << i + 1 << std::endl; 
@@ -164,6 +163,5 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
     std::cout << "Player 1's Accuracy: " << (double) score1 / args->games << std::endl;
     std::cout << "Player 2's Accuracy: " << (double) score2 / args->games << std::endl;
-    delete args;
     return 0;
 }

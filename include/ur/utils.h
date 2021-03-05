@@ -16,7 +16,7 @@ namespace ur {
 
     enum class Color { WHITE, BLACK };
 
-    std::ostream& operator<<(std::ostream& str, Color const& c);
+    std::ostream& operator<<(std::ostream& str, const Color & c);
     Color opposite(Color orig) noexcept;
 
     struct Move {

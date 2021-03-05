@@ -9,11 +9,11 @@
 namespace ur {
     class Game {
         private:
-            bool display;
             Board b;
             players::Player& white_player;
             players::Player& black_player;
             Color turn;
+            bool display;
 
             int get_move(int roll) const;
             void display_move(int roll, int tile) const noexcept;

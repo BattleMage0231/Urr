@@ -1,7 +1,7 @@
 #include <ur/utils.h>
 
 namespace ur {
-    std::ostream& operator<<(std::ostream& os, Color const& c) {
+    std::ostream& operator<<(std::ostream& os, const Color & c) {
         return os << (c == Color::WHITE ? "WHITE" : "BLACK");
     };
 

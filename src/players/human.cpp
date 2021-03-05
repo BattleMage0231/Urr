@@ -4,7 +4,7 @@ namespace ur {
     namespace players {
         HumanPlayer::HumanPlayer(Color turn) : player_turn(turn) {}
 
-        int HumanPlayer::get_move(Board b, int roll) {
+        int HumanPlayer::get_move(Board& b, int roll) {
             if(roll < 0) {
                 throw std::invalid_argument("Roll value must be non-negative");
             }
@@ -12,7 +12,7 @@ namespace ur {
             using std::cout;
             using std::endl;
             std::string input;
-            int res;
+            int res = NULL_POS;
             do {
                 cout << player_turn << "'s Turn:" << endl;
                 cout << "We have " << b.get_rem(player_turn) << " pieces remaining" << endl;

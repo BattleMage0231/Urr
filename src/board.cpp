@@ -16,15 +16,13 @@ namespace ur {
     }
 
     Board::Board(const Board& orig) noexcept 
-        : white_rem(orig.white_rem)
+        : white_pieces(orig.white_pieces)
+        , black_pieces(orig.black_pieces)
+        , white_rem(orig.white_rem)
         , black_rem(orig.black_rem)
         , white_done(orig.white_done)
         , black_done(orig.black_done)
-    {
-        // copy constructor
-        white_pieces = orig.white_pieces;
-        black_pieces = orig.black_pieces;
-    }
+    {}
 
     bool Board::has_piece(int tile, Color turn) const {
         return pieces(turn).at(tile);
