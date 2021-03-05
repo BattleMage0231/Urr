@@ -6,6 +6,7 @@ namespace ur {
         , black_player(black)
         , turn(Color::WHITE) 
         , display(verbose)
+        , dice_dist(std::uniform_int_distribution(0, 1))
     {}
 
     int Game::get_move(int roll) const {
@@ -26,7 +27,7 @@ namespace ur {
         if(display) b.display_board();
         int roll = 0;
         for(int i = 0; i < NUM_DICE; ++i) {
-            roll += rand() % 2;
+            roll += dice_dist(rng);
         }
         if(!b.has_valid(roll, turn)) {
             if(display) display_skip(roll);

@@ -9,6 +9,12 @@ namespace ur {
         return (t == Color::WHITE) ? Color::BLACK : Color::WHITE;
     }
 
+    std::mt19937 rng;
+
+    void set_seed(unsigned seed) {
+        rng.seed(seed);
+    }
+
     bool is_competition(int tile) noexcept {
         return 4 <= tile && tile <= 11;
     }

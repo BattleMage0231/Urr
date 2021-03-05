@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <limits>
+#include <random>
 
 namespace ur {
     constexpr int BOARD_SIZE = 14;
@@ -18,6 +19,10 @@ namespace ur {
 
     std::ostream& operator<<(std::ostream& str, const Color& c);
     Color opposite(Color orig) noexcept;
+
+    extern std::mt19937 rng;
+
+    void set_seed(unsigned seed);
 
     struct Move {
         bool has_move;

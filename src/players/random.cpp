@@ -2,13 +2,15 @@
 
 namespace ur {
     namespace players {
-        RandomPlayer::RandomPlayer(Color turn) {}
+        RandomPlayer::RandomPlayer(Color turn)
+            : tile_dist(std::uniform_int_distribution(OFF_BOARD, BOARD_SIZE - 1))
+        {}
 
         int RandomPlayer::get_move(Board& b, int roll) {
             if(roll < 0) {
                 throw std::invalid_argument("Roll value must be non-negative");
             }
-            return (rand() % (BOARD_SIZE + 1)) - 1;
+            return tile_dist(rng);
         }
     }
 }

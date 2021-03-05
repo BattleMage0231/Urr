@@ -125,13 +125,18 @@ int main(int argc, char* argv[]) {
     using std::cout;
     using std::endl;
     const std::unique_ptr<Args> args = parse_args(argc, argv);
-    srand(args->seed);
+    // initialize lib's rng
+    ur::set_seed(args->seed);
+    // initialize app's rng
+    std::mt19937 app_rng;
+    app_rng.seed(args->seed);
+    std::uniform_int_distribution<int> col_dist(0, 1);
     int score1 = 0;
     int score2 = 0;
     for(int i = 0; i < args->games; ++i) {
         int p1_color = 0;
         if(args->rand) {
-            p1_color = rand() % 2;
+            p1_color = col_dist(app_rng);
         }
         ur::Color color = ur::Color::WHITE;
         if(p1_color == 1) {
