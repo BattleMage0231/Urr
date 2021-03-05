@@ -8,26 +8,23 @@ namespace ur {
             if(roll < 0) {
                 throw std::invalid_argument("Roll value must be non-negative");
             }
-            using std::cin;
-            using std::cout;
-            using std::endl;
             std::string input;
             int res = NULL_POS;
             do {
-                cout << player_turn << "'s Turn:" << endl;
-                cout << "We have " << b.get_rem(player_turn) << " pieces remaining" << endl;
-                cout << "They have " << b.get_rem(opposite(player_turn)) << " pieces remaining" << endl;
-                cout << "The roll is a " << roll << endl;
-                cout << "Move >>> ";
-                std::getline(cin, input);
+                std::cout << player_turn << "'s Turn:" << std::endl;
+                std::cout << "We have " << b.get_rem(player_turn) << " pieces remaining" << std::endl;
+                std::cout << "They have " << b.get_rem(opposite(player_turn)) << " pieces remaining" << std::endl;
+                std::cout << "The roll is a " << roll << std::endl;
+                std::cout << "Move >>> ";
+                std::getline(std::cin, input);
                 try {
                     res = std::stoi(input);
                 } catch(std::exception& e) {
-                    cout << endl;
+                    std::cout << std::endl;
                     continue;
                 }
-                cout << endl;
-            } while(cin.fail());
+                std::cout << std::endl;
+            } while(std::cin.fail());
             return res;
         }
     }

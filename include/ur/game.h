@@ -20,7 +20,7 @@ namespace ur {
             void display_skip(int roll) const noexcept;
             void make_move();
         public:
-            Game(players::Player& white, players::Player& black, bool display) noexcept;
+            Game(players::Player& white, players::Player& black, bool verbose) noexcept;
             players::Player& get_player() const noexcept;
             Color play();
     };

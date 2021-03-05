@@ -12,11 +12,11 @@ namespace ur {
     constexpr int OFF_BOARD = -1;
 
     const double INF = std::numeric_limits<double>::max();
-    const double NEGINF = -INF;
+    const double NEGINF = std::numeric_limits<double>::lowest();
 
     enum class Color { WHITE, BLACK };
 
-    std::ostream& operator<<(std::ostream& str, const Color & c);
+    std::ostream& operator<<(std::ostream& str, const Color& c);
     Color opposite(Color orig) noexcept;
 
     struct Move {

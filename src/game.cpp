@@ -1,11 +1,11 @@
 #include <ur/game.h>
 
 namespace ur {
-    Game::Game(players::Player& white, players::Player& black, bool display) noexcept 
+    Game::Game(players::Player& white, players::Player& black, bool verbose) noexcept 
         : white_player(white)
         , black_player(black)
         , turn(Color::WHITE) 
-        , display(display)
+        , display(verbose)
     {}
 
     int Game::get_move(int roll) const {

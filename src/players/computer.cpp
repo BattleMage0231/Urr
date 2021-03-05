@@ -11,9 +11,9 @@ namespace ur {
             , max_depth(4U)
         {}
 
-        AIPlayer::AIPlayer(Color turn, unsigned max_depth)
+        AIPlayer::AIPlayer(Color turn, unsigned depth)
             : player_turn(turn) 
-            , max_depth(max_depth)
+            , max_depth(depth)
         {}
 
         int AIPlayer::any_free(const Board& b, Color turn) const {
@@ -25,7 +25,7 @@ namespace ur {
                     return i;
                 }
             }
-            throw;
+            throw std::logic_error("Expected at least one free piece");
         }
 
         double AIPlayer::get_avg(Board& b, unsigned depth, Color turn, double alpha, double beta) const {

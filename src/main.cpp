@@ -25,8 +25,7 @@ struct Args {
 };
 
 std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
-    int opt;
-    Args* args = new Args {
+    std::unique_ptr<Args> args = std::unique_ptr<Args>(new Args {
         .player1 = "",
         .player2 = "",
         .seed = (unsigned) time(nullptr),
@@ -34,7 +33,8 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
         .rand = false,
         .verbose = true,
         .games = 1,
-    };
+    });
+    int opt;
     while((opt = getopt(argc, argv, "p:g:s:d:rqvh")) != -1) {
         switch(opt) {
             case 'p': {
@@ -107,18 +107,18 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
     if(args->player2 == "") {
         args->player2 = "AI";
     }
-    return std::unique_ptr<Args>(args);
+    return args;
 }
 
 std::unique_ptr<ur::players::Player> from_id(const std::string& id, ur::Color turn, int max_depth) {
     if(id == "AI") {
-        return std::unique_ptr<ur::players::Player>(new ur::players::AIPlayer(turn, max_depth));
+        return std::make_unique<ur::players::AIPlayer>(turn, max_depth);
     } else if(id == "HUMAN") {
-        return std::unique_ptr<ur::players::Player>(new ur::players::HumanPlayer(turn));
+        return std::make_unique<ur::players::HumanPlayer>(turn);
     } else if(id == "RANDOM") {
-        return std::unique_ptr<ur::players::Player>(new ur::players::RandomPlayer(turn));
+        return std::make_unique<ur::players::RandomPlayer>(turn);
     }
-    throw;
+    throw std::logic_error("Bad player type");
 }
 
 int main(int argc, char* argv[]) {

@@ -27,7 +27,7 @@ namespace ur {
                 Node negamax(Board& b, int roll, Color turn, unsigned depth, double alpha, double beta) const;
             public:
                 explicit AIPlayer(Color turn);
-                AIPlayer(Color turn, unsigned max_depth);
+                AIPlayer(Color turn, unsigned depth);
                 double value_of(const Board& b, Color turn) const;
                 int get_move(Board& b, int roll) override;
         };
