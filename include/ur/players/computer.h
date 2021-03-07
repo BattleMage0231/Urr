@@ -80,6 +80,7 @@ namespace ur {
              * Finds the the best move at a position with optimal play.
              *
              * @param b the board
+             * @param roll the roll value
              * @param depth the current depth
              * @param turn which player's turn it is
              * @param alpha he current alpha value used in alpha-beta pruning 

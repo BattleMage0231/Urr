@@ -39,7 +39,7 @@ namespace ur {
      * Overloads the << operator to support the Color enum.
      * Allows direct output of Color to std::cout.
      * 
-     * @param str the output stream
+     * @param os the output stream
      * @param c the Color
      * @return the output stream reference. 
      */
