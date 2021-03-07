@@ -129,7 +129,7 @@ namespace ur {
              * @param tile the move
              * @param turn which player to check for
              * @return whether the move is valid
-             * @throws std::invalid_argument if the roll value is negative or the tile is invalid.
+             * @throws std::invalid_argument if the roll value is negative.
              */
             bool is_valid(int roll, int tile, Color turn) const;
 

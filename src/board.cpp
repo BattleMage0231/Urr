@@ -86,7 +86,7 @@ namespace ur {
             throw std::invalid_argument("Roll value must be non-negative");
         }
         if(!tile_exists(tile)) {
-            throw std::invalid_argument("Tile must be a valid value");
+            return false;
         }
         int rem = get_rem(turn);
         if(roll == 0) {
