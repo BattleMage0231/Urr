@@ -26,5 +26,3 @@ file(GLOB_RECURSE SOURCE_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 add_executable(urr ${SOURCE_FILES})
 
 target_include_directories(urr PRIVATE ${PROJECT_SOURCE_DIR}/include)
-
-install(TARGETS urr DESTINATION ${CMAKE_BINARY_DIR}/bin)

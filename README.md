@@ -76,9 +76,9 @@ You must have CMake 3.16 or higher installed to build this project. You must als
    git clone https://github.com/BattleMage0231/Urr.git
    cd Urr
    ```
-1. To build the executable
+1. To build the executable to Urr/bin
    ```sh
-   cmake . && make install
+   cmake . && make
    ```
 3. To build the documentation
    ```sh
