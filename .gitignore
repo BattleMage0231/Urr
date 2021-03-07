@@ -11,3 +11,4 @@ CMakeDoxygenDefaults.cmake
 Doxyfile.out
 docs/html
 docs/latex
+install_manifest.txt

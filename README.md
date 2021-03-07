@@ -1,17 +1,3 @@
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Thanks again! Now go create something AMAZING! :D
-***
-***
-***
-*** To avoid retyping too much info. Do a search and replace for the following:
-*** BattleMage0231, Urr, xxxxxxxx, leyang.zou@student.tdsb.on.ca, Urr, Artificial intelligence to play the Royal Game of Ur
--->
-
-
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
@@ -92,7 +78,7 @@ You must have CMake 3.16 or higher installed to build this project. You must als
    ```
 1. To build the executable
    ```sh
-   cmake . && make
+   cmake . && make install
    ```
 3. To build the documentation
    ```sh
