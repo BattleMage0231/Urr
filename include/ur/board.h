@@ -30,6 +30,30 @@ namespace ur {
 
             /** A list of all of the moves made. */
             std::vector<Move> moves;
+
+            /**
+             * Gets a reference to the board pieces of a player.
+             *
+             * @param turn the player
+             * @return the reference
+             */
+            std::array<bool, BOARD_SIZE>& pieces(Color turn) noexcept;
+
+            /**
+             * Gets a reference to the number of remaining pieces of a player.
+             *
+             * @param turn the player
+             * @return the reference
+             */
+            int& rem(Color turn) noexcept;
+
+            /**
+             * Gets a reference to the number of finished pieces of a player.
+             *
+             * @param turn the player
+             * @return the reference
+             */
+            int& done(Color turn) noexcept;
         public:
             /**
              * The constructor of the Board class.

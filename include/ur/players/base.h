@@ -15,5 +15,10 @@ namespace ur {
              * @return the possibly invalid tile to move
              */
             virtual int get_move(Board& b, int roll) = 0;
+
+            /**
+             * The destructor of the Player class.
+             */
+            virtual ~Player() {};
     };
 }

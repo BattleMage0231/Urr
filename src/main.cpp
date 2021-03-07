@@ -8,16 +8,12 @@
 #include <cstdlib>
 #include <exception>
 #include <memory>
-#include <stdlib.h>
 #include <unistd.h>
 
-// the random number generator of the app
-std::mt19937 app_rng;
-
 // conveniently print an error message and exit the program
-#define err(msg) {                  \
-    std::cerr << msg << std::endl;  \
-    exit(1);                        \
+void err(std::string msg) {
+    std::cerr << msg << std::endl;
+    exit(1);
 }
 
 struct Args {
@@ -35,8 +31,8 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
     std::unique_ptr<Args> args = std::unique_ptr<Args>(new Args {
         .player1 = "",
         .player2 = "",
-        .seed = static_cast<unsigned>(time(nullptr)),
-        .max_depth = 4,
+        .seed = static_cast<unsigned>(std::time(nullptr)),
+        .max_depth = 4U,
         .rand = false,
         .verbose = true,
         .games = 1,
@@ -111,28 +107,32 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
         }
     }
     // set default player to AI
-    if(args->player1 == "") {
+    if(args->player1.empty()) {
         args->player1 = "AI";
     }
-    if(args->player2 == "") {
+    if(args->player2.empty()) {
         args->player2 = "AI";
     }
     return args;
 }
 
 // makes a player from an identifier
-std::unique_ptr<ur::Player> from_id(const std::string& id, ur::Color turn, int max_depth) {
+std::unique_ptr<ur::Player> from_id(const std::string& id, ur::Color turn, unsigned max_depth) {
     if(id == "AI") {
         return std::make_unique<ur::AIPlayer>(turn, max_depth);
-    } else if(id == "HUMAN") {
+    }
+    if(id == "HUMAN") {
         return std::make_unique<ur::HumanPlayer>(turn);
-    } else if(id == "RANDOM") {
-        return std::make_unique<ur::RandomPlayer>(turn);
+    }
+    if(id == "RANDOM") {
+        return std::make_unique<ur::RandomPlayer>();
     }
     throw std::logic_error("Bad player type");
 }
 
 void run(const std::unique_ptr<Args>& args) {
+    // the random number generator of the app
+    std::mt19937 app_rng(args->seed);
     std::uniform_int_distribution<int> col_dist(0, 1);
     // the scores of each player
     int score1 = 0;
@@ -176,8 +176,6 @@ int main(int argc, char* argv[]) {
     std::unique_ptr<Args> args = parse_args(argc, argv);
     // initialize library's rng
     ur::set_seed(args->seed);
-    // initialize app's rng
-    app_rng.seed(args->seed);
     // run the program
     run(args);
     return 0;

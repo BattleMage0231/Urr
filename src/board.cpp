@@ -1,13 +1,10 @@
 #include <ur/board.h>
 
-// to easily access a variable by a player color
-#define rem(turn) ((turn == Color::WHITE) ? white_rem : black_rem)
-#define done(turn) ((turn == Color::WHITE) ? white_done : black_done)
-#define pieces(turn) ((turn == Color::WHITE) ? white_pieces : black_pieces)
-
 namespace ur {
     Board::Board() noexcept
-        : white_rem(NUM_PIECES)
+        : white_pieces(std::array<bool, BOARD_SIZE>())
+        , black_pieces(std::array<bool, BOARD_SIZE>())
+        , white_rem(NUM_PIECES)
         , black_rem(NUM_PIECES)
         , white_done(0)
         , black_done(0)
@@ -25,8 +22,20 @@ namespace ur {
         , black_done(orig.black_done)
     {}
 
+    std::array<bool, BOARD_SIZE>& Board::pieces(Color turn) noexcept {
+        return (turn == Color::WHITE) ? white_pieces : black_pieces;
+    }
+
+    int& Board::rem(Color turn) noexcept {
+        return (turn == Color::WHITE) ? white_rem : black_rem;
+    }
+
+    int& Board::done(Color turn) noexcept {
+        return (turn == Color::WHITE) ? white_done : black_done;
+    }
+
     bool Board::has_piece(int tile, Color turn) const {
-        return pieces(turn).at(tile);
+        return (turn == Color::WHITE) ? white_pieces.at(tile) : black_pieces.at(tile);
     }
 
     int Board::get_rem(Color turn) const noexcept {
@@ -57,7 +66,8 @@ namespace ur {
             if(has_piece(i, turn)) {
                 if(i + roll == BOARD_SIZE) {
                     return true;
-                } else if(is_board(i + roll)) {
+                }
+                if(is_board(i + roll)) {
                     // if there is no piece blocking this one from moving
                     if(!has_piece(i + roll, turn)) {
                         // if there is no invulnerable opponent piece at the destination
@@ -94,7 +104,8 @@ namespace ur {
         if(has_piece(tile, turn)) {
             if(tile + roll == BOARD_SIZE) {
                 return true;
-            } else if(is_board(tile + roll)) {
+            }
+            if(is_board(tile + roll)) {
                 // check that there is no piece blocking this one from moving
                 // and there is no invulnerable opponent piece at the destination
                 return !has_piece(tile + roll, turn) && !is_invulnerable(tile + roll, opposite(turn));
@@ -119,16 +130,16 @@ namespace ur {
     void Board::display_board() const noexcept {
         // display first line (white safe zone)
         for(int i = 0; i < BOARD_SIZE; ++i) {
-            if(i == 4 || i == 12) {
+            if(i == COMP_START || i == COMP_END) {
                 std::cout << "| ";
             }
-            if(i >= 4 && i < 12) {
+            if(i >= COMP_START && i < COMP_END) {
                 std::cout << "  ";
                 continue;
             }
-            if(white_pieces[i]) {
+            if(white_pieces.at(i)) {
                 std::cout << "* ";
-            } else if(black_pieces[i] && is_competition(i)) {
+            } else if(black_pieces.at(i) && is_competition(i)) {
                 std::cout << "+ ";
             } else if(is_rosette(i)) {
                 std::cout << "_ ";
@@ -139,16 +150,16 @@ namespace ur {
         std::cout << std::endl;
         // display second line (competition zone)
         for(int i = 0; i < BOARD_SIZE; ++i) {
-            if(i == 4 || i == 12) {
+            if(i == COMP_START || i == COMP_END) {
                 std::cout << "| ";
             }
-            if(i < 4 || i >= 12) {
+            if(i < COMP_START || i >= COMP_END) {
                 std::cout << "  ";
                 continue;
             }
-            if(white_pieces[i]) {
+            if(white_pieces.at(i)) {
                 std::cout << "* ";
-            } else if(black_pieces[i]) {
+            } else if(black_pieces.at(i)) {
                 std::cout << "+ ";
             } else if(is_rosette(i)) {
                 std::cout << "_ ";
@@ -159,16 +170,16 @@ namespace ur {
         std::cout << std::endl;
         // display third line (black safe zone)
         for(int i = 0; i < BOARD_SIZE; ++i) {
-            if(i == 4 || i == 12) {
+            if(i == COMP_START || i == COMP_END) {
                 std::cout << "| ";
             }
-            if(i >= 4 && i < 12) {
+            if(i >= COMP_START && i < COMP_END) {
                 std::cout << "  ";
                 continue;
             }
-            if(black_pieces[i]) {
+            if(black_pieces.at(i)) {
                 std::cout << "+ ";
-            } else if(white_pieces[i] && is_competition(i)) {
+            } else if(white_pieces.at(i) && is_competition(i)) {
                 std::cout << "* ";
             } else if(is_rosette(i)) {
                 std::cout << "_ ";
@@ -179,7 +190,7 @@ namespace ur {
         std::cout << std::endl;
         // display fourth line (indices)
         for(int i = 0; i < BOARD_SIZE; ++i) {
-            if(i == 4 || i == 12) {
+            if(i == COMP_START || i == COMP_END) {
                 std::cout << "| ";
             }
             std::cout << i % 10 << " ";
@@ -197,21 +208,21 @@ namespace ur {
         }
         if(mov.orig == OFF_BOARD) {
             // move the piece back off board
-            pieces(mov.turn)[mov.loc] = false;
+            pieces(mov.turn).at(mov.loc) = false;
             ++rem(mov.turn);
         } else if(mov.loc == BOARD_SIZE) {
             // move the finished piece back on the board
-            pieces(mov.turn)[mov.orig] = true;
+            pieces(mov.turn).at(mov.orig) = true;
             --done(mov.turn);
         } else {
             // move the piece back to its original position
-            pieces(mov.turn)[mov.loc] = false;
-            pieces(mov.turn)[mov.orig] = true;
+            pieces(mov.turn).at(mov.loc) = false;
+            pieces(mov.turn).at(mov.orig) = true;
         }
         if(mov.took_piece) {
             // untake an opponent piece
             --rem(opposite(mov.turn));
-            pieces(opposite(mov.turn))[mov.loc] = true;
+            pieces(opposite(mov.turn)).at(mov.loc) = true;
         }
     }
 
@@ -226,7 +237,7 @@ namespace ur {
     }
 
     void Board::move_piece(int orig, int loc, Color turn) {
-        if(!tile_exists(orig) || (!tile_exists(loc) && loc != 14)) {
+        if(!tile_exists(orig) || (!tile_exists(loc) && loc != BOARD_SIZE)) {
             throw std::invalid_argument("Tile must be a valid value");
         }
         Move mov {
@@ -239,26 +250,26 @@ namespace ur {
         if(orig != loc) {
             if(loc == BOARD_SIZE) {
                 // move the finished piece off board
-                pieces(turn)[orig] = false;
+                pieces(turn).at(orig) = false;
                 ++done(turn);
             } else if(orig == OFF_BOARD) {
                 // move the piece onto the board
                 --rem(turn);
-                pieces(turn)[loc] = true;
+                pieces(turn).at(loc) = true;
                 // possible take an opponent piece
                 if(is_competition(loc) && has_piece(loc, opposite(turn))) {
                     ++rem(opposite(turn));
-                    pieces(opposite(turn))[loc] = false;
+                    pieces(opposite(turn)).at(loc) = false;
                     mov.took_piece = true;
                 }
             } else {
                 // move the piece to its new location
-                pieces(turn)[orig] = false;
-                pieces(turn)[loc] = true;
+                pieces(turn).at(orig) = false;
+                pieces(turn).at(loc) = true;
                 // possible take an opponent piece
                 if(is_competition(loc) && has_piece(loc, opposite(turn))) {
                     ++rem(opposite(turn));
-                    pieces(opposite(turn))[loc] = false;
+                    pieces(opposite(turn)).at(loc) = false;
                     mov.took_piece = true;
                 }
             }

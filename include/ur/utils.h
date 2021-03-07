@@ -20,6 +20,12 @@ namespace ur {
     /** A constant for an off tile position. */
     constexpr int OFF_BOARD = -1;
 
+    /** The starting tile of the competition zone, inclusive. */
+    constexpr int COMP_START = 4;
+
+    /** The ending tile of the competition zone, exclusive. */
+    constexpr int COMP_END = 12;
+
     /** The maximum double value supported by the system. */
     const double INF = std::numeric_limits<double>::max();
 
@@ -37,7 +43,7 @@ namespace ur {
      * @param c the Color
      * @return the output stream reference. 
      */
-    std::ostream& operator<<(std::ostream& str, const Color& c);
+    std::ostream& operator<<(std::ostream& os, const Color& c);
 
     /**
      * Returns the opposite of a color.

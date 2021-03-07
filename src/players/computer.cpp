@@ -15,7 +15,7 @@ namespace ur {
         , max_depth(depth)
     {}
 
-    int AIPlayer::any_free(const Board& b, Color turn) const {
+    int AIPlayer::any_free(const Board& b, Color turn) {
         // check if there are any off board pieces
         if(b.get_rem(turn) > 0) {
             return OFF_BOARD;
@@ -31,11 +31,10 @@ namespace ur {
 
     double AIPlayer::get_avg(Board& b, unsigned depth, Color turn, double alpha, double beta) const {
         // chances of each roll happening
-        double rates[NUM_DICE + 1] = {0.0625, 0.25, 0.375, 0.25, 0.0625};
         double ans = 0;
         // do negamax for each possible roll
         for(int i = 0; i <= NUM_DICE; ++i) {
-            ans += rates[i] * negamax(b, i, turn, depth, alpha, beta).value;
+            ans += RATES[i] * negamax(b, i, turn, depth, alpha, beta).value;
         }
         return ans;
     }
@@ -96,7 +95,7 @@ namespace ur {
         for(auto it = moves.rbegin(); it != moves.rend(); ++it) {
             int tile = (*it).pos;
             b.move_piece(tile, tile + roll, turn);
-            double ans;
+            double ans = 0.0;
             if(!is_rosette(tile + roll)) {
                 // minimize next move since the opponent is moving
                 ans = -get_avg(b, depth + 1, opposite(turn), -beta, -alpha);
@@ -123,21 +122,16 @@ namespace ur {
         };
     }
 
-    double AIPlayer::value_of(const Board& b, Color turn) const {
+    double AIPlayer::value_of(const Board& b, Color turn) {
         double val = 0;
-        // the relative value of each tile
-        // takes into account vision, rosette tiles, and proximity to the end
-        double loc_vals[BOARD_SIZE] = {
-            1.02, 1.30, 1.27, 1.93, 1.28, 1.33, 1.38, 2.38, 1.46, 1.44, 1.38, 1.35, 2.20, 1.75
-        };
         for(int i = 0; i < BOARD_SIZE; ++i) {
             // add if we have a piece on this tile
             if(b.has_piece(i, turn)) {
-                val += loc_vals[i];
+                val += LOC_VALS[i];
             }
             // subtract if our opponent has a piece on this tile
             if(b.has_piece(i, opposite(turn))) {
-                val -= loc_vals[i];
+                val -= LOC_VALS[i];
             }
         }
         int rem = b.get_rem(turn);

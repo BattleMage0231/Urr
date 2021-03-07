@@ -15,10 +15,8 @@ namespace ur {
         public:
             /**
              * The constructor of the RandomPlayer class.
-             *
-             * @param turn the player's color
              */
-            explicit RandomPlayer(Color turn);
+            RandomPlayer();
 
             /**
              * Gets the next move the player makes.

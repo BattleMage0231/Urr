@@ -30,6 +30,14 @@ namespace ur {
                 bool operator <(const Node& other) const;
             };
 
+            /** The probability of each possible dice roll. */
+            constexpr static double RATES[NUM_DICE + 1] = {0.0625, 0.25, 0.375, 0.25, 0.0625};
+
+            /** The relative value of each board location.  */
+            constexpr static double LOC_VALS[BOARD_SIZE] = {
+                1.02, 1.30, 1.27, 1.93, 1.28, 1.33, 1.38, 2.38, 1.46, 1.44, 1.38, 1.35, 2.20, 1.75,
+            };
+
             /** The color of the current player. */
             Color player_turn;
 
@@ -46,7 +54,7 @@ namespace ur {
              * @return a position that has a piece on it
              * @throws std::logic_error if there are no available pieces.
              */
-            int any_free(const Board& b, Color turn) const;
+            static int any_free(const Board& b, Color turn);
 
             /**
              * Gets the average value at a certain position without knowing the dice roll.
@@ -97,7 +105,7 @@ namespace ur {
              * @param turn which player to evaluate
              * @return the value of the board
              */
-            double value_of(const Board& b, Color turn) const;
+            static double value_of(const Board& b, Color turn);
 
             /**
              * Gets the next move the player makes.

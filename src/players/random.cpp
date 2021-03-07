@@ -1,7 +1,7 @@
 #include <ur/players/random.h>
 
 namespace ur {
-    RandomPlayer::RandomPlayer(Color turn)
+    RandomPlayer::RandomPlayer()
         : tile_dist(std::uniform_int_distribution(OFF_BOARD, BOARD_SIZE - 1)) // possible tiles
     {}
 

@@ -1,12 +1,12 @@
 #include <ur/utils.h>
 
 namespace ur {
-    std::ostream& operator<<(std::ostream& os, const Color & c) {
+    std::ostream& operator<<(std::ostream& os, const Color& c) {
         return os << (c == Color::WHITE ? "WHITE" : "BLACK");
     };
 
-    Color opposite(Color t) noexcept {
-        return (t == Color::WHITE) ? Color::BLACK : Color::WHITE;
+    Color opposite(Color orig) noexcept {
+        return (orig == Color::WHITE) ? Color::BLACK : Color::WHITE;
     }
 
     std::mt19937 rng;
@@ -16,7 +16,7 @@ namespace ur {
     }
 
     bool is_competition(int tile) noexcept {
-        return 4 <= tile && tile <= 11;
+        return COMP_START <= tile && tile < COMP_END;
     }
 
     bool is_rosette(int tile) noexcept {
