@@ -102,7 +102,20 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
             case 'h': 
             default: {
                 // print a help message
-                std::cout << "Not yet implemented (\"help\")" << std::endl;
+                std::cout << R"(
+Usage: urr [OPTIONS]
+
+Simulates the Royal Game of Ur between two players.
+
+Options:
+    -p <AI|RANDOM|HUMAN>    The player type of the first player. Use again if specifying the second player as well. Defaults to AI.
+    -g <number>             The number of games to simulate. Defaults to 1.
+    -s <number>	            The seed of the random number generator. Defaults to the current timestamp.
+    -d <number>             The maximum depth the AI player will search the game tree to. Defaults to 4.
+    -r                      Randomizes the colors of each game.
+    -q                      Don't output the state of the board and the moves made.
+    -h                      Shows this help message.
+                )" << std::endl;
                 exit(0);
             }
         }

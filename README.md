@@ -15,7 +15,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <h3 align="center">Urr</h3>
+  <h2 align="center">Urr</h3>
 
   <p align="center">
     Artificial intelligence to play the Royal Game of Ur
