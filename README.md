@@ -23,6 +23,7 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -40,7 +41,7 @@
 
 <img src="./assets/image1.jpg" width="800" height="450"/>
 
-This project implements artificial intelligence that uses a negamax algorithm to play the <a html="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Royal Game of Ur</a>. Because of the random element of the game, the algorithm has to calculate a weighted average score for each move and roll instead of travering the game tree directly. In addition, move reordering and alpha-beta pruning are used to speed up the algorithm. The project also contains a small CLI app to test the AI player against a player that makes its moves randomly and a human player.
+This project implements artificial intelligence that uses a negamax algorithm to play the <a html="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Royal Game of Ur</a>. Because of the random element of the game, the algorithm has to calculate a weighted average score for each move and roll instead of travering the game tree directly. In addition, move reordering and alpha-beta pruning are used to speed up the algorithm. The project also contains a small CLI app to test the AI player against other types of players.
 
 
 
@@ -48,9 +49,9 @@ This project implements artificial intelligence that uses a negamax algorithm to
 
 <img src="./assets/image2.jpg" width="750" height="400"/>
 
-Ur is a turn-based racing game played between two players. Each players starts with seven pieces, the objective being to get all seven pieces to the end of the above board before their opponent.
+Ur is a turn-based race game played between two players. Each players starts with seven pieces, the objective being to get all seven pieces to the end of the above board before their opponent.
 
-During each turn, a player rolls four binary dice giving a roll between 0 and 4. They may advance one of their pieces forward or move a piece onto the board by the value of the roll. They may not move a piece if its destination is blocked by another piece belonging to the player. Also, the player may move a piece off the end of the board, making it finished (the piece cannot be moved if the roll value is greater than the exact amount needed to finish). If a player has no moves, their turn is skipped. Otherwise, the player must make a move.
+During each turn, a player rolls four binary dice giving a roll between 0 and 4. They may advance one of their pieces forward or move a piece onto the board by the value of the roll. They may not move a piece if its destination is blocked by another piece belonging to the same player. Also, the player may move a piece off the other end of the board, making it finished (the piece cannot be moved if the roll value is greater than the exact amount needed to finish). If a player has no moves, their turn is skipped. Otherwise, the player must make a move.
 
 The first four and last two tiles shown above are safe zones for either player's pieces. However, the middle eight tiles are part of a competition zone shared by both players. In this zone, a player can capture another player's pieces if they land on the same tile, sending it back off the board.
 
@@ -121,7 +122,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - leyang.zou@student.tdsb.on.ca
+Leyang Zou - leyang.zou@student.tdsb.on.ca
 
 Project Link: [https://github.com/BattleMage0231/Urr](https://github.com/BattleMage0231/Urr)
 
