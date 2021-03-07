@@ -28,7 +28,7 @@ namespace ur {
     }
 
     double AIPlayer::get_avg(Board& b, unsigned depth, Color turn, double alpha, double beta) const {
-        double rates[] = {0.0625, 0.25, 0.375, 0.25, 0.0625};
+        double rates[NUM_DICE + 1] = {0.0625, 0.25, 0.375, 0.25, 0.0625};
         double ans = 0;
         for(int i = 0; i <= NUM_DICE; ++i) {
             ans += rates[i] * negamax(b, i, turn, depth, alpha, beta).value;
@@ -36,7 +36,7 @@ namespace ur {
         return ans;
     }
 
-    AIPlayer::Node AIPlayer::negamax(Board& b, int roll, Color turn, unsigned depth, double alpha, double beta) const{
+    AIPlayer::Node AIPlayer::negamax(Board& b, int roll, Color turn, unsigned depth, double alpha, double beta) const {
         if(b.finished() || depth > max_depth) {
             return Node {
                 .pos = NULL_POS,
