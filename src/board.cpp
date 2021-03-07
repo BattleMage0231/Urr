@@ -109,8 +109,6 @@ namespace ur {
                 // check that there is no piece blocking this one from moving
                 // and there is no invulnerable opponent piece at the destination
                 return !has_piece(tile + roll, turn) && !is_invulnerable(tile + roll, opposite(turn));
-            } else {
-                return false;
             }
         }
         return false;

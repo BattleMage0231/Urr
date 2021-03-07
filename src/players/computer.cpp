@@ -141,7 +141,9 @@ namespace ur {
         int board = NUM_PIECES - rem - done;
         int opp_board = NUM_PIECES - opp_rem - opp_done;
         // additional calculations
-        return val + 10.0 * done + 2.0 * board - 10.0 * opp_done - 2.0 * opp_board;
+        val += FINISHED_VALUE * done + BOARD_VALUE * board;
+        val -= FINISHED_VALUE * opp_done - BOARD_VALUE * opp_board;
+        return val;
     }
 
     int AIPlayer::get_move(Board& b, int roll) {

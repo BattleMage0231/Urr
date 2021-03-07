@@ -38,6 +38,12 @@ namespace ur {
                 1.02, 1.30, 1.27, 1.93, 1.28, 1.33, 1.38, 2.38, 1.46, 1.44, 1.38, 1.35, 2.20, 1.75,
             };
 
+            /** The value of each finished piece. */
+            constexpr static double FINISHED_VALUE = 10.0;
+
+            /** The value of each piece on the board. */
+            constexpr static double BOARD_VALUE = 2.0;
+
             /** The color of the current player. */
             Color player_turn;
 

@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 // conveniently print an error message and exit the program
-void err(std::string msg) {
+void err(const std::string& msg) {
     std::cerr << msg << std::endl;
     exit(1);
 }
@@ -23,7 +23,7 @@ struct Args {
     unsigned max_depth;     // the maximum depth of the AI player
     bool rand;              // whether the colors should be randomized
     bool verbose;           // whether to display moves and the board
-    int games;              // the number of games to play
+    unsigned games;         // the number of games to play
 };
 
 // parses the command line arguments into a struct
@@ -37,7 +37,7 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
         .verbose = true,
         .games = 1,
     });
-    int opt;
+    int opt = 0;
     while((opt = getopt(argc, argv, "p:g:s:d:rqh")) != -1) {
         switch(opt) {
             case 'p': {
@@ -45,9 +45,9 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
                 std::string input(optarg);
                 if(input == "AI" || input == "HUMAN" || input == "RANDOM") {
                     // if the first player is already set, set the second one
-                    if(args->player1 == "") {
+                    if(args->player1.empty()) {
                         args->player1 = input;
-                    } else if(args->player2 == "") {
+                    } else if(args->player2.empty()) {
                         args->player2 = input;
                     } else {
                         err("The maximum number of players in -p is 2.");
@@ -99,7 +99,8 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
                 break;
             }
             case '?':
-            case 'h': {
+            case 'h': 
+            default: {
                 // print a help message
                 std::cout << "Not yet implemented (\"help\")" << std::endl;
                 exit(0);
