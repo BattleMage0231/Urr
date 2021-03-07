@@ -1,4 +1,6 @@
-#include <ur/players.h>
+#include <ur/players/computer.h>
+#include <ur/players/human.h>
+#include <ur/players/random.h>
 #include <ur/game.h>
 #include <ur/utils.h>
 
@@ -110,13 +112,13 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
     return args;
 }
 
-std::unique_ptr<ur::players::Player> from_id(const std::string& id, ur::Color turn, int max_depth) {
+std::unique_ptr<ur::Player> from_id(const std::string& id, ur::Color turn, int max_depth) {
     if(id == "AI") {
-        return std::make_unique<ur::players::AIPlayer>(turn, max_depth);
+        return std::make_unique<ur::AIPlayer>(turn, max_depth);
     } else if(id == "HUMAN") {
-        return std::make_unique<ur::players::HumanPlayer>(turn);
+        return std::make_unique<ur::HumanPlayer>(turn);
     } else if(id == "RANDOM") {
-        return std::make_unique<ur::players::RandomPlayer>(turn);
+        return std::make_unique<ur::RandomPlayer>(turn);
     }
     throw std::logic_error("Bad player type");
 }
@@ -142,8 +144,8 @@ int main(int argc, char* argv[]) {
         if(p1_color == 1) {
             color = ur::Color::BLACK;
         }
-        std::unique_ptr<ur::players::Player> white;
-        std::unique_ptr<ur::players::Player> black;
+        std::unique_ptr<ur::Player> white;
+        std::unique_ptr<ur::Player> black;
         if(color == ur::Color::WHITE) {
             // p1 is white
             white = from_id(args->player1, ur::Color::WHITE, args->max_depth);

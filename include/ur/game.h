@@ -10,8 +10,8 @@ namespace ur {
     class Game {
         private:
             Board b;
-            players::Player& white_player;
-            players::Player& black_player;
+            Player& white_player;
+            Player& black_player;
             Color turn;
             bool display;
             std::uniform_int_distribution<int> dice_dist;
@@ -21,8 +21,8 @@ namespace ur {
             void display_skip(int roll) const noexcept;
             void make_move();
         public:
-            Game(players::Player& white, players::Player& black, bool verbose) noexcept;
-            players::Player& get_player() const noexcept;
+            Game(Player& white, Player& black, bool verbose) noexcept;
+            Player& get_player() const noexcept;
             Color play();
     };
 }

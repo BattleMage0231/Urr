@@ -7,13 +7,11 @@
 #include <ur/players/base.h>
 
 namespace ur {
-    namespace players {
-        class HumanPlayer : public virtual Player {
-            private:
-                Color player_turn;
-            public:
-                explicit HumanPlayer(Color turn);
-                int get_move(Board& b, int roll) override;
-        };
-    }
+    class HumanPlayer : public virtual Player {
+        private:
+            Color player_turn;
+        public:
+            explicit HumanPlayer(Color turn);
+            int get_move(Board& b, int roll) override;
+    };
 }

@@ -1,7 +1,7 @@
 #include <ur/game.h>
 
 namespace ur {
-    Game::Game(players::Player& white, players::Player& black, bool verbose) noexcept 
+    Game::Game(Player& white, Player& black, bool verbose) noexcept 
         : white_player(white)
         , black_player(black)
         , turn(Color::WHITE) 
@@ -46,7 +46,7 @@ namespace ur {
         }
     }
 
-    players::Player& Game::get_player() const noexcept {
+    Player& Game::get_player() const noexcept {
         return (turn == Color::WHITE) ? white_player : black_player;
     }
 
