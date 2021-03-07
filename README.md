@@ -12,30 +12,9 @@
 
 
 
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
-
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/BattleMage0231/Urr">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
   <h3 align="center">Urr</h3>
 
   <p align="center">
@@ -73,13 +52,15 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+<img src="./assets/image1.jpg" width="800" height="450"/>
 
 This project implements artificial intelligence that uses a negamax algorithm to play the <a html="https://en.wikipedia.org/wiki/Royal_Game_of_Ur">Royal Game of Ur</a>. Because of the random element of the game, the algorithm has to calculate a weighted average score for each move and roll instead of travering the game tree directly. In addition, move reordering and alpha-beta pruning are used to speed up the algorithm. The project also contains a small CLI app to test the AI player against a player that makes its moves randomly and a human player.
 
 
 
 ## Rules
+
+<img src="./assets/image2.jpg" width="750" height="400"/>
 
 Ur is a turn-based racing game played between two players. Each players starts with seven pieces, the objective being to get all seven pieces to the end of the above board before their opponent.
 
@@ -91,6 +72,7 @@ There are also five rosette tiles (marked as flowers on the above board). If a p
 
 In order to better represent this board programmatically, it has been modified into the functionally equivalent board below. The first four tiles and last two tiles represent the safe zone, and the rest is the competition zone.
 
+<img src="./assets/image3.PNG" width="600" height="200"/>
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -136,7 +118,7 @@ Simulate a game between a human player and an AI player, where the colors are ra
 urr -p HUMAN -p AI -r
 ```
 
-For the full list of command line arguments, run the following.
+See the full list of command line arguments:
 ```sh
 urr -h
 ```
@@ -164,19 +146,5 @@ Project Link: [https://github.com/BattleMage0231/Urr](https://github.com/BattleM
 
 * [GitHub README template](https://github.com/othneildrew/Best-README-Template)
 * [The Royal Game of Ur with expectiminimax AI](https://github.com/kirklange/rgu)
+* [Tom Scott vs Irving Finkel: The Royal Game of Ur](https://www.youtube.com/watch?v=WZskjLq040I)
 
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/BattleMage0231/repo.svg?style=for-the-badge
-[contributors-url]: https://github.com/BattleMage0231/repo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/BattleMage0231/repo.svg?style=for-the-badge
-[forks-url]: https://github.com/BattleMage0231/repo/network/members
-[stars-shield]: https://img.shields.io/github/stars/BattleMage0231/repo.svg?style=for-the-badge
-[stars-url]: https://github.com/BattleMage0231/repo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/BattleMage0231/repo.svg?style=for-the-badge
-[issues-url]: https://github.com/BattleMage0231/repo/issues
-[license-shield]: https://img.shields.io/github/license/BattleMage0231/repo.svg?style=for-the-badge
-[license-url]: https://github.com/BattleMage0231/repo/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/BattleMage0231
