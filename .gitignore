@@ -5,3 +5,9 @@ CMakeCache.txt
 cmake_install.cmake
 Makefile
 build.sh
+CMakeDoxyfile.in
+CMakeDoxyfile.tpl.bak
+CMakeDoxygenDefaults.cmake
+Doxyfile.out
+docs/html
+docs/latex
