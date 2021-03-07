@@ -11,37 +11,44 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// the random number generator of the app
+std::mt19937 app_rng;
+
+// conveniently print an error message and exit the program
 #define err(msg) {                  \
     std::cerr << msg << std::endl;  \
     exit(1);                        \
 }
 
 struct Args {
-    std::string player1;
-    std::string player2;
-    unsigned seed;
-    unsigned max_depth;
-    bool rand;
-    bool verbose;
-    int games;
+    std::string player1;    // the type of the first player ("AI", "HUMAN", "RANDOM")
+    std::string player2;    // the type of the second player
+    unsigned seed;          // the seed of the random number generator
+    unsigned max_depth;     // the maximum depth of the AI player
+    bool rand;              // whether the colors should be randomized
+    bool verbose;           // whether to display moves and the board
+    int games;              // the number of games to play
 };
 
+// parses the command line arguments into a struct
 std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
     std::unique_ptr<Args> args = std::unique_ptr<Args>(new Args {
         .player1 = "",
         .player2 = "",
-        .seed = (unsigned) time(nullptr),
+        .seed = static_cast<unsigned>(time(nullptr)),
         .max_depth = 4,
         .rand = false,
         .verbose = true,
         .games = 1,
     });
     int opt;
-    while((opt = getopt(argc, argv, "p:g:s:d:rqvh")) != -1) {
+    while((opt = getopt(argc, argv, "p:g:s:d:rqh")) != -1) {
         switch(opt) {
             case 'p': {
+                // set the type of one of the players
                 std::string input(optarg);
                 if(input == "AI" || input == "HUMAN" || input == "RANDOM") {
+                    // if the first player is already set, set the second one
                     if(args->player1 == "") {
                         args->player1 = input;
                     } else if(args->player2 == "") {
@@ -55,6 +62,7 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
                 break;
             }
             case 'g': {
+                // set the number of games
                 std::string input(optarg);
                 try {
                     unsigned games = static_cast<unsigned>(std::stoul(input));
@@ -65,6 +73,7 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
                 break;
             }
             case 's': {
+                // sets the seed of the random number generator
                 std::string input(optarg);
                 try {
                     unsigned seed = static_cast<unsigned>(std::stoul(input));
@@ -75,6 +84,7 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
                 break;
             }
             case 'd': {
+                // sets the maximum depth of an AI player
                 std::string input(optarg);
                 try {
                     unsigned max_depth = static_cast<unsigned>(std::stoul(input));
@@ -92,17 +102,15 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
                 args->verbose = false;
                 break;
             }
-            case 'v': {
-                std::cout << "Version 1.0" << std::endl;
-                exit(0);
-            }
             case '?':
             case 'h': {
+                // print a help message
                 std::cout << "Not yet implemented (\"help\")" << std::endl;
                 exit(0);
             }
         }
     }
+    // set default player to AI
     if(args->player1 == "") {
         args->player1 = "AI";
     }
@@ -112,6 +120,7 @@ std::unique_ptr<Args> parse_args(int argc, char* argv[]) {
     return args;
 }
 
+// makes a player from an identifier
 std::unique_ptr<ur::Player> from_id(const std::string& id, ur::Color turn, int max_depth) {
     if(id == "AI") {
         return std::make_unique<ur::AIPlayer>(turn, max_depth);
@@ -123,16 +132,9 @@ std::unique_ptr<ur::Player> from_id(const std::string& id, ur::Color turn, int m
     throw std::logic_error("Bad player type");
 }
 
-int main(int argc, char* argv[]) {
-    using std::cout;
-    using std::endl;
-    const std::unique_ptr<Args> args = parse_args(argc, argv);
-    // initialize lib's rng
-    ur::set_seed(args->seed);
-    // initialize app's rng
-    std::mt19937 app_rng;
-    app_rng.seed(args->seed);
+void run(const std::unique_ptr<Args>& args) {
     std::uniform_int_distribution<int> col_dist(0, 1);
+    // the scores of each player
     int score1 = 0;
     int score2 = 0;
     for(int i = 0; i < args->games; ++i) {
@@ -140,10 +142,7 @@ int main(int argc, char* argv[]) {
         if(args->rand) {
             p1_color = col_dist(app_rng);
         }
-        ur::Color color = ur::Color::WHITE;
-        if(p1_color == 1) {
-            color = ur::Color::BLACK;
-        }
+        ur::Color color = (p1_color == 0 ? ur::Color::WHITE : ur::Color::BLACK);
         std::unique_ptr<ur::Player> white;
         std::unique_ptr<ur::Player> black;
         if(color == ur::Color::WHITE) {
@@ -168,7 +167,18 @@ int main(int argc, char* argv[]) {
         std::cout << "Finished game " << i + 1 << " with " << score1 << " : " << score2 << std::endl;
     }
     std::cout << std::endl;
-    std::cout << "Player 1's Accuracy: " << (double) score1 / args->games << std::endl;
-    std::cout << "Player 2's Accuracy: " << (double) score2 / args->games << std::endl;
+    std::cout << "Player 1's Percentage: " << static_cast<double>(score1) / args->games << std::endl;
+    std::cout << "Player 2's Percentage: " << static_cast<double>(score2) / args->games << std::endl;
+}
+
+int main(int argc, char* argv[]) {
+    // parse args
+    std::unique_ptr<Args> args = parse_args(argc, argv);
+    // initialize library's rng
+    ur::set_seed(args->seed);
+    // initialize app's rng
+    app_rng.seed(args->seed);
+    // run the program
+    run(args);
     return 0;
 }

@@ -9,6 +9,8 @@ namespace ur {
         }
         std::string input;
         int res = NULL_POS;
+        // prompt the user for their move until it is an integer
+        // the board and previous moves are displayed from the Game class
         do {
             std::cout << player_turn << "'s Turn:" << std::endl;
             std::cout << "We have " << b.get_rem(player_turn) << " pieces remaining" << std::endl;
@@ -17,6 +19,7 @@ namespace ur {
             std::cout << "Move >>> ";
             std::getline(std::cin, input);
             try {
+                // try to parse input as integer
                 res = std::stoi(input);
             } catch(std::exception& e) {
                 std::cout << std::endl;

@@ -24,22 +24,31 @@ namespace ur {
     }
 
     void Game::make_move() {
-        if(display) b.display_board();
+        if(display) {
+            b.display_board();
+        }
+        // get dice roll
         int roll = 0;
         for(int i = 0; i < NUM_DICE; ++i) {
             roll += dice_dist(rng);
         }
+        // no valid moves
         if(!b.has_valid(roll, turn)) {
-            if(display) display_skip(roll);
+            if(display) {
+                display_skip(roll);
+            }
             b.no_moves(turn);
             turn = opposite(turn);
             return;
         }
+        // get move from player
         int tile = get_move(roll);
         while(!b.is_valid(roll, tile, turn)) {
             tile = get_move(roll);
         }
-        if(display) display_move(roll, tile);
+        if(display) {
+            display_move(roll, tile);
+        }
         b.move_piece(tile, tile + roll, turn);
         if(!is_rosette(tile + roll)) {
             turn = opposite(turn);
